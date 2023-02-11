@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "505727810146",
+    "project_id": "textile-service",
+    "storage_bucket": "textile-service.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:505727810146:android:1d1c3111ded9fa114eaf3b",
+        "android_client_info": {
+          "package_name": "com.example.textile_service"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "505727810146-kccq652k1bl6shn7rdvfu11rh0t6den0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIzw8NU_dvRKnn_Fu3Bce9vJ1m-CY0Xhs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "505727810146-kccq652k1bl6shn7rdvfu11rh0t6den0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
