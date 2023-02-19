@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:textile_service/Screens/Distributor/HomeScreen.dart';
 import 'package:textile_service/Utils/app_constant.dart';
-import '../../../Utils/Authentication.dart';
 import '../../../Utils/ClipperPath.dart';
 import '../Login Screen/login_screen.dart';
 
@@ -134,40 +133,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                        contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                        hintStyle: TextStyle(color: Colors.grey[600]),
                                      ),
-                                     // decoration: InputDecoration(
-                                     //   hintText: "Name",
-                                     //   hintStyle: TextStyle(
-                                     //     fontSize: size.width * 0.04,
-                                     //     letterSpacing: 1,
-                                     //     fontFamily: AppConstant.regular,
-                                     //     color: AppConstant.primaryTextDarkColor,
-                                     //   ),
-                                     //   enabledBorder: OutlineInputBorder(
-                                     //     borderSide: BorderSide(
-                                     //         color: AppConstant.borderColor,
-                                     //         width: 0.6
-                                     //     ),
-                                     //   ),
-                                     //   focusedBorder: OutlineInputBorder(
-                                     //     borderSide: BorderSide(
-                                     //         color: AppConstant.borderColor,
-                                     //         width: 1.1
-                                     //     ),
-                                     //   ),
-                                     //   errorBorder: OutlineInputBorder(
-                                     //     borderSide: BorderSide(
-                                     //         color: Colors.red[600]!,
-                                     //         width: 0.6
-                                     //     ),
-                                     //   ),
-                                     //   focusedErrorBorder: OutlineInputBorder(
-                                     //     borderSide: BorderSide(
-                                     //         color: Colors.red[600]!,
-                                     //         width: 1.1
-                                     //     ),
-                                     //   ),
-                                     //   prefixIcon: Icon(Icons.account_circle, color: AppConstant.borderColor, size: 22,),
-                                     // ),
+
                                      validator: (value){
                                        if(value!.isEmpty){
                                          return "Enter your name";
@@ -214,40 +180,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                        contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                        hintStyle: TextStyle(color: Colors.grey[600]),
                                      ),
-                                     // decoration: InputDecoration(
-                                     //     hintText: "Mobile Number",
-                                     //     hintStyle: TextStyle(
-                                     //       fontSize: size.width * 0.04,
-                                     //       letterSpacing: 1,
-                                     //       fontFamily: AppConstant.regular,
-                                     //       color: AppConstant.primaryTextDarkColor,
-                                     //     ),
-                                     //     enabledBorder: OutlineInputBorder(
-                                     //       borderSide: BorderSide(
-                                     //           color: AppConstant.borderColor,
-                                     //           width: 0.6
-                                     //       ),
-                                     //     ),
-                                     //     focusedBorder: OutlineInputBorder(
-                                     //       borderSide: BorderSide(
-                                     //           color: AppConstant.borderColor,
-                                     //           width: 1.1
-                                     //       ),
-                                     //     ),
-                                     //     errorBorder: OutlineInputBorder(
-                                     //       borderSide: BorderSide(
-                                     //           color: Colors.red[600]!,
-                                     //           width: 0.6
-                                     //       ),
-                                     //     ),
-                                     //     focusedErrorBorder: OutlineInputBorder(
-                                     //       borderSide: BorderSide(
-                                     //           color: Colors.red[600]!,
-                                     //           width: 1.1
-                                     //       ),
-                                     //     ),
-                                     //     prefixIcon: Icon(Icons.phone, color: AppConstant.borderColor, size: 22,)
-                                     // ),
+
                                      validator: (value){
                                        if(value!.isEmpty){
                                          return "Enter your mobile number.";
@@ -296,40 +229,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                        contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                        hintStyle: TextStyle(color: Colors.grey[600]),
                                      ),
-                                     // decoration: InputDecoration(
-                                     //     hintText: "Email",
-                                     //     hintStyle: TextStyle(
-                                     //       fontSize: size.width * 0.04,
-                                     //       letterSpacing: 1,
-                                     //       fontFamily: AppConstant.regular,
-                                     //       color: AppConstant.primaryTextDarkColor,
-                                     //     ),
-                                     //     enabledBorder: OutlineInputBorder(
-                                     //       borderSide: BorderSide(
-                                     //           color: AppConstant.borderColor,
-                                     //           width: 0.6
-                                     //       ),
-                                     //     ),
-                                     //     focusedBorder: OutlineInputBorder(
-                                     //       borderSide: BorderSide(
-                                     //           color: AppConstant.borderColor,
-                                     //           width: 1.1
-                                     //       ),
-                                     //     ),
-                                     //     errorBorder: OutlineInputBorder(
-                                     //       borderSide: BorderSide(
-                                     //           color: Colors.red[600]!,
-                                     //           width: 0.6
-                                     //       ),
-                                     //     ),
-                                     //     focusedErrorBorder: OutlineInputBorder(
-                                     //       borderSide: BorderSide(
-                                     //           color: Colors.red[600]!,
-                                     //           width: 1.1
-                                     //       ),
-                                     //     ),
-                                     //     prefixIcon: Icon(Icons.email, color: AppConstant.borderColor, size: 22,)
-                                     // ),
+
                                      validator: (value){
                                        if(value!.isEmpty){
                                          return "Enter your  email";
@@ -387,48 +287,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                        contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                        hintStyle: TextStyle(color: Colors.grey[600]),
                                      ),
-                                     // decoration: InputDecoration(
-                                     //   hintText: "Password",
-                                     //   hintStyle: TextStyle(
-                                     //     fontSize: size.width * 0.04,
-                                     //     letterSpacing: 1,
-                                     //     fontFamily: AppConstant.regular,
-                                     //     color: AppConstant.primaryTextDarkColor,
-                                     //   ),
-                                     //   enabledBorder: OutlineInputBorder(
-                                     //     borderSide: BorderSide(
-                                     //         color: AppConstant.borderColor,
-                                     //         width: 0.6
-                                     //     ),
-                                     //   ),
-                                     //   focusedBorder: OutlineInputBorder(
-                                     //     borderSide: BorderSide(
-                                     //         color: AppConstant.borderColor,
-                                     //         width: 1.1
-                                     //     ),
-                                     //   ),
-                                     //   errorBorder: OutlineInputBorder(
-                                     //     borderSide: BorderSide(
-                                     //         color: Colors.red[600]!,
-                                     //         width: 0.6
-                                     //     ),
-                                     //   ),
-                                     //   focusedErrorBorder: OutlineInputBorder(
-                                     //     borderSide: BorderSide(
-                                     //         color: Colors.red[600]!,
-                                     //         width: 1.1
-                                     //     ),
-                                     //   ),
-                                     //   prefixIcon: Icon(Icons.lock, color: AppConstant.borderColor, size: 22,),
-                                     //   suffixIcon: IconButton(
-                                     //     onPressed: (){
-                                     //       setState(() {
-                                     //         isVisible = !isVisible;
-                                     //       });
-                                     //     },
-                                     //     icon: Icon(isVisible == true? Icons.visibility : Icons.visibility_off, size: 22, color: AppConstant.borderColor),
-                                     //   ),
-                                     // ),
+
                                      validator: (value){
                                        if(value!.isEmpty){
                                          return "Enter your password";
@@ -446,11 +305,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         try {
                                           FirebaseAuth.instance.createUserWithEmailAndPassword(email: email.text, password: password.text.toString())
                                               .then((value) {
-                                            DocumentReference documentReference = FirebaseFirestore.instance.collection('DistributorData').doc();
+                                            DocumentReference documentReference = FirebaseFirestore.instance.collection('Distributors').doc();
                                             Map<String, dynamic> distributorData = {
                                               'Name': name.text,
                                               'Mobile-Number': mobileNo.text,
                                               'Email': email.text,
+                                              'Role': 'Distributor'
                                               // 'Password': password
                                             };
                                             documentReference.set(distributorData);

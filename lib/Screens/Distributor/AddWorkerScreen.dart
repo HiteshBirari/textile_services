@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -5,7 +6,6 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../Utils/ClipperPath.dart';
 import '../../Utils/app_constant.dart';
-
 
 class AddWorkerScreen extends StatefulWidget {
   const AddWorkerScreen({Key? key}) : super(key: key);
@@ -15,11 +15,14 @@ class AddWorkerScreen extends StatefulWidget {
 }
 
 class _AddWorkerScreenState extends State<AddWorkerScreen> {
+  RegExp emailRegex = RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  final key = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
-    final double statusBarHeight= MediaQuery.of(context).padding.top;
+    final double statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: const Color(0xFFe9f0fb),
       resizeToAvoidBottomInset: false,
@@ -28,7 +31,7 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
         child: Stack(
           children: [
             Container(
-              height: height*0.80,
+              height: height * 0.80,
               alignment: Alignment.center,
               child: ClipPath(
                 clipper: CustomClipPath(),
@@ -66,107 +69,158 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
             ),
             Container(
 
-              // padding: EdgeInsets.only(top: height * 0.05, left:width*0.05, right:width*0.05),
-                margin: EdgeInsets.fromLTRB(width*0.40, height*0.12, width*0.05, height*0),
-                child: SvgPicture.asset('Assets/Images/user-add.svg',height:height *0.10,color: AppConstant.backgroundColor,)),
+                // padding: EdgeInsets.only(top: height * 0.05, left:width*0.05, right:width*0.05),
+                margin: EdgeInsets.fromLTRB(
+                    width * 0.40, height * 0.12, width * 0.05, height * 0),
+                child: SvgPicture.asset(
+                  'Assets/Images/user-add.svg',
+                  height: height * 0.10,
+                  color: AppConstant.backgroundColor,
+                )),
             Container(
-                height: height*0.68,
-                width: width,
-                padding: EdgeInsets.only(top: height * 0.04,left:width*0.05,right:width*0.05),
-                margin: EdgeInsets.fromLTRB(width*0.05, height*0.25, width*0.05, height*0.09),
-                decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    borderRadius: const BorderRadius.all(Radius.circular(5)),
-                    // BoxShape.circle or BoxShape.retangle
-                    color: AppConstant.backgroundColor,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppConstant.grey,
-                        blurRadius: 5.0,
-                      ),
-                    ]),
-                child: AnimationLimiter(
-                  child: Column(
-                    children: AnimationConfiguration.toStaggeredList(
-                      duration: const Duration(milliseconds: 275),
-                      childAnimationBuilder: (widget) => SlideAnimation(
-                        verticalOffset: 56.0,
-                        child: FadeInAnimation(child: widget),
-                      ),
+              height: height * 0.68,
+              width: width,
+              padding: EdgeInsets.only(
+                  top: height * 0.04, left: width * 0.05, right: width * 0.05),
+              margin: EdgeInsets.fromLTRB(
+                  width * 0.05, height * 0.25, width * 0.05, height * 0.09),
+              decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  // BoxShape.circle or BoxShape.retangle
+                  color: AppConstant.backgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppConstant.grey,
+                      blurRadius: 5.0,
+                    ),
+                  ]),
+              child: AnimationLimiter(
+                  child: Form(
+                key: key,
+                child: Column(
+                  children: AnimationConfiguration.toStaggeredList(
+                    duration: const Duration(milliseconds: 275),
+                    childAnimationBuilder: (widget) => SlideAnimation(
+                      verticalOffset: 56.0,
+                      child: FadeInAnimation(child: widget),
+                    ),
                     children: [
                       getTextFeild(
-                        'Name',
+                        'Name*',
                         workerName,
                         isNumber: false,
-                        inputformat: [FilteringTextInputFormatter.deny(RegExp(r'[^a-zA-Z\s]')),],
-                          onChanged: (){
-                        }
+                        inputformat: [
+                          FilteringTextInputFormatter.deny(
+                              RegExp(r'[^a-zA-Z\s]')),
+                        ],
+                        onChanged: () {},
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Enter your name";
+                          } else {
+                            return null;
+                          }
+                        },
                       ),
                       SizedBox(
-                        height: height*0.03,
+                        height: height * 0.03,
                       ),
                       getTextFeild(
-                        'Email Id',
+                        'Email Id*',
                         workerEmailId,
                         isNumber: false,
-                          onChanged: (){
+                        onChanged: () {},
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Enter your email";
+                          } else if (!emailRegex.hasMatch(value)) {
+                            return "Enter a valid email";
+                          } else {
+                            return null;
                           }
+                        },
                       ),
                       SizedBox(
-                        height: height*0.03,
+                        height: height * 0.03,
                       ),
                       getTextFeild(
-                        'Phone Number',
+                        'Phone Number*',
                         workerPhoneNumber,
                         isNumber: true,
-                        inputformat:  <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(10),
+                        inputformat: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(10),
                         ],
-                          onChanged: (){
-                         setState(() {
-                           workerPassword.text = ' ${workerName.text}@${workerPhoneNumber.text.substring(0,2).toString()}';
-                         });
-                        }
+                        onChanged: () {
+                          setState(() {
+                            workerPassword.text =
+                                ' ${workerName.text}@${workerPhoneNumber.text.substring(0, 2).toString()}';
+                          });
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Enter your mobile number.";
+                          } else if (value.length < 10) {
+                            return "Enter a valid mobile number.";
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(
-                        height: height*0.03,
+                        height: height * 0.03,
                       ),
                       getTextFeild(
                         'Address',
                         workerAddress,
-                        maxLine: 3,
+                        maxLine: 4,
                         isNumber: false,
-                          onChanged: (){
-                          }
+                        onChanged: () {},
                       ),
                       SizedBox(
-                        height: height*0.03,
+                        height: height * 0.03,
                       ),
                       getTextFeild(
                         'Password',
                         workerPassword,
                         isNumber: false,
                         isenable: false,
-                          onChanged: (){
-                          }
+                        onChanged: () {},
                       ),
                       SizedBox(
-                        height: height*0.05,
+                        height: height * 0.05,
                       ),
                       MaterialButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          if (key.currentState!.validate()) {
+                            DocumentReference documentReference =
+                                FirebaseFirestore.instance
+                                    .collection('Workers')
+                                    .doc();
+                            Map<String, dynamic> distributorData = {
+                              'Name': workerName.text,
+                              'Mobile-Number': workerPhoneNumber.text,
+                              'Email': workerEmailId.text,
+                              'Address': workerAddress.text,
+                              'Password': workerPassword.text,
+                              'Role': 'Worker'
+                            };
+                            documentReference.set(distributorData);
+                          }
+                        },
                         height: height * 0.06,
                         elevation: 3,
                         color: AppConstant.primaryColor,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: width*0.235),
+                          margin:
+                              EdgeInsets.symmetric(horizontal: width * 0.235),
                           child: Text(
                             'Submit',
                             style: TextStyle(
-                                fontSize: width*0.05,
+                                fontSize: width * 0.05,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500),
                           ),
@@ -174,39 +228,44 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                       ),
                     ],
                   ),
-                )),)
+                ),
+              )),
+            )
           ],
         ),
       ),
     );
   }
 
+  TextEditingController workerName = TextEditingController();
+  TextEditingController workerEmailId = TextEditingController();
+  TextEditingController workerPhoneNumber = TextEditingController();
+  TextEditingController workerAddress = TextEditingController();
+  TextEditingController workerPassword = TextEditingController();
 
-  TextEditingController workerName= TextEditingController();
-  TextEditingController workerEmailId= TextEditingController();
-  TextEditingController workerPhoneNumber= TextEditingController();
-  TextEditingController workerAddress= TextEditingController();
-  TextEditingController workerPassword= TextEditingController();
-
-
-
-  getTextFeild(String lable, var txtController,
-      {int maxLine : 1,
-        required VoidCallback onChanged,
-        bool isenable: true,
-        bool isNumber: false,
-        var inputformat}) {
+  getTextFeild(
+    String lable,
+    var txtController, {
+    int maxLine: 1,
+        int minimum :1,
+    required VoidCallback onChanged,
+    final FormFieldValidator<String>? validator,
+    bool isenable: true,
+    bool isNumber: false,
+    var inputformat,
+  }) {
     List<TextInputFormatter> filter = [];
     filter.addAll(inputformat ?? []);
     if (isNumber)
       filter.add(FilteringTextInputFormatter.allow(RegExp(r'[0-9]')));
     return Container(
       margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-      child: TextField(
+      child: TextFormField(
         controller: txtController,
         inputFormatters: filter,
         maxLines: maxLine,
-        onChanged:(value){
+        minLines: minimum,
+        onChanged: (value) {
           onChanged();
         },
         keyboardType: isNumber
@@ -215,17 +274,15 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
         decoration: InputDecoration(
           filled: false,
           fillColor: isenable ? Colors.grey[150] : Colors.grey[300],
-          // prefixIcon: preFixFile != null
-          //     ? Container(
-          //   padding: EdgeInsets.all(12.0),
-          //   child: SvgPicture.asset(
-          //     preFixFile,
-          //     height: 15,
-          //     color: Colors.black87,
-          //   ),
-          // )
-          //     : null,
           enabled: isenable,
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.red),
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+          ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: AppConstant.primaryColor),
             borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -243,8 +300,8 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
           contentPadding: EdgeInsets.fromLTRB(15, 3, 0, 0),
           hintStyle: TextStyle(color: Colors.grey[600]),
         ),
+        validator: validator,
       ),
     );
   }
-
 }

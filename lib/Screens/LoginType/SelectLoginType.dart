@@ -80,7 +80,7 @@ class _SelectLoginTypeState extends State<SelectLoginType> {
                                   SizedBox(height: size.height * 0.04),
                                   MaterialButton(
                                     onPressed: () {
-                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginScreen()),(route) => false);
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                                     },
                                     height: size.height * 0.06,
                                     elevation: 3,
