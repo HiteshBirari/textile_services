@@ -37,6 +37,12 @@ dependencies:
   flutter_svg: ^1.1.6
   package_info_plus: ^3.0.2
   firebase_auth: ^4.2.5
+  flutter_custom_clippers: ^2.1.0
+  intl: ^0.17.0
+  syncfusion_flutter_charts: ^20.4.49
+  dotted_border: ^2.0.0+3
+  image_picker: ^0.8.6
+  awesome_snackbar_content: ^0.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
