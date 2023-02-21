@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:textile_service/Screens/Distributor/Add%20Worker/Database/add_worker_database.dart';
+import 'package:textile_service/Screens/Distributor/Add%20Worker/Models/add_worker_model.dart';
 
-import '../../Utils/ClipperPath.dart';
-import '../../Utils/app_constant.dart';
+import '../../../Utils/ClipperPath.dart';
+import '../../../Utils/app_constant.dart';
 
 class AddWorkerScreen extends StatefulWidget {
   const AddWorkerScreen({Key? key}) : super(key: key);
@@ -18,6 +21,9 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
   RegExp emailRegex = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
   final key = GlobalKey<FormState>();
+  FirebaseAuth auth = FirebaseAuth.instance;
+  AddWorkerDatabase db = AddWorkerDatabase();
+
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
@@ -193,19 +199,15 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                       MaterialButton(
                         onPressed: () {
                           if (key.currentState!.validate()) {
-                            DocumentReference documentReference =
-                                FirebaseFirestore.instance
-                                    .collection('Workers')
-                                    .doc();
-                            Map<String, dynamic> distributorData = {
-                              'Name': workerName.text,
-                              'Mobile-Number': workerPhoneNumber.text,
-                              'Email': workerEmailId.text,
-                              'Address': workerAddress.text,
-                              'Password': workerPassword.text,
-                              'Role': 'Worker'
-                            };
-                            documentReference.set(distributorData);
+                            db.addWorker(data: AddWorkerModel(
+                                name: workerName.text,
+                                mobileNumber: workerPhoneNumber.text,
+                                email: workerEmailId.text,
+                                address: workerAddress.text,
+                                password: workerPassword.text,
+                                distributorEmail: auth.currentUser!.email!,
+                                lastUpdatedTime: DateTime.now(),
+                            ));
                           }
                         },
                         height: height * 0.06,

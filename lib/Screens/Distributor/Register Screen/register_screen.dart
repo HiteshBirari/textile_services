@@ -4,7 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:textile_service/Screens/Distributor/HomeScreen.dart';
+import 'package:textile_service/Screens/Distributor/Register%20Screen/Database/distributor_database.dart';
+import 'package:textile_service/Screens/Distributor/Register%20Screen/Models/distributor_model.dart';
 import 'package:textile_service/Utils/app_constant.dart';
+import '../../../Utils/Authentication.dart';
 import '../../../Utils/ClipperPath.dart';
 import '../Login Screen/login_screen.dart';
 
@@ -27,7 +30,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isLoading = false;
   final key = GlobalKey<FormState>();
   String? role;
-
+  DistributorDatabase db = DistributorDatabase();
   RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 
   @override
@@ -133,7 +136,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                        contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                        hintStyle: TextStyle(color: Colors.grey[600]),
                                      ),
-
                                      validator: (value){
                                        if(value!.isEmpty){
                                          return "Enter your name";
@@ -180,7 +182,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                        contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                        hintStyle: TextStyle(color: Colors.grey[600]),
                                      ),
-
                                      validator: (value){
                                        if(value!.isEmpty){
                                          return "Enter your mobile number.";
@@ -229,7 +230,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                        contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                        hintStyle: TextStyle(color: Colors.grey[600]),
                                      ),
-
                                      validator: (value){
                                        if(value!.isEmpty){
                                          return "Enter your  email";
@@ -287,7 +287,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                        contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                        hintStyle: TextStyle(color: Colors.grey[600]),
                                      ),
-
                                      validator: (value){
                                        if(value!.isEmpty){
                                          return "Enter your password";
@@ -305,15 +304,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         try {
                                           FirebaseAuth.instance.createUserWithEmailAndPassword(email: email.text, password: password.text.toString())
                                               .then((value) {
-                                            DocumentReference documentReference = FirebaseFirestore.instance.collection('Distributors').doc();
-                                            Map<String, dynamic> distributorData = {
-                                              'Name': name.text,
-                                              'Mobile-Number': mobileNo.text,
-                                              'Email': email.text,
-                                              'Role': 'Distributor'
-                                              // 'Password': password
-                                            };
-                                            documentReference.set(distributorData);
+                                                db.addDistributor(data: DistributorModel(
+                                                name: name.text,
+                                                mobileNumber: mobileNo.text,
+                                                email: email.text,
+                                                lastUpdatedTime: DateTime.now(),
+                                            ));
                                           }).then((value) {
                                             final snackBar = SnackBar(
                                               /// need to set following properties for best effect of awesome_snackbar_content
@@ -397,25 +393,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                          margin: EdgeInsets.symmetric(horizontal: size.width*0.285),
                                          child: CircularProgressIndicator(color: AppConstant.backgroundColor,)),
                                    ),
-                                   // MaterialButton(
-                                   //   onPressed: (){
-                                   //     if(key.currentState!.validate()){
-                                   //
-                                   //     }
-                                   //   },
-                                   //   minWidth: size.width * 0.5,
-                                   //   height: size.height * 0.058,
-                                   //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                   //   color: AppConstant.buttonColor,
-                                   //   child:  Text("Register",
-                                   //     style: TextStyle(
-                                   //       fontSize: size.height * 0.03,
-                                   //       letterSpacing: 2.5,
-                                   //       fontFamily: AppConstant.medium,
-                                   //       color: AppConstant.backgroundColor,
-                                   //     ),
-                                   //   ),
-                                   // ),
                                    SizedBox(height: size.height * 0.023),
                                    Row(
                                      mainAxisAlignment: MainAxisAlignment.center,
@@ -430,7 +407,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                        SizedBox(width: size.width * 0.01),
                                        InkWell(
                                          onTap: (){
-                                           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginScreen()), (route) => false);
+                                           Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
                                          },
                                          child: Text("Login",
                                            style: TextStyle(
