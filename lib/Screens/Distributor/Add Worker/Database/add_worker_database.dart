@@ -1,8 +1,6 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:textile_service/Screens/Distributor/Add%20Worker/Models/add_worker_model.dart';
 
 class AddWorkerDatabase {
@@ -11,8 +9,6 @@ class AddWorkerDatabase {
   factory AddWorkerDatabase() {
     return _databaseInstance;
   }
-
-  FirebaseAuth _auth = FirebaseAuth.instance;
 
   AddWorkerDatabase._();
 
@@ -79,7 +75,7 @@ class AddWorkerDatabase {
     int count = 0;
     try {
       var snap =
-      await FirebaseFirestore.instance.collection('Workers').where('distributor',isEqualTo:_auth.currentUser!.email).count().get();
+      await FirebaseFirestore.instance.collection('Workers').count().get();
       count = snap.count;
       return count;
     } catch (err) {
@@ -90,7 +86,7 @@ class AddWorkerDatabase {
 
   Stream<QuerySnapshot> listenWorker() {
     return FirebaseFirestore.instance
-        .collection('Workers').where('distributor',isEqualTo:_auth.currentUser!.email)
+        .collection('Workers')
         .orderBy("lastUpdatedTime", descending: true)
         .snapshots();
   }

@@ -43,6 +43,7 @@ dependencies:
   dotted_border: ^2.0.0+3
   image_picker: ^0.8.6
   awesome_snackbar_content: ^0.1.0
+  shared_preferences: ^2.0.17
   fluttertoast: ^8.2.1
 
 
