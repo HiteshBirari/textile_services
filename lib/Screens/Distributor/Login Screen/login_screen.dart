@@ -1,8 +1,10 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:textile_service/Utils/app_constant.dart';
+import 'package:textile_service/Utils/pref_utils.dart';
 import '../../../Utils/ClipperPath.dart';
 import '../HomeScreen.dart';
 import '../Register Screen/register_screen.dart';
@@ -23,8 +25,23 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isVisible = true;
   bool isLoading = false;
   final key = GlobalKey<FormState>();
-
+  PrefUtils prefUtils = PrefUtils();
   RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+
+
+  Future<void> signIn() async {
+    QuerySnapshot workers =
+    await FirebaseFirestore.instance.collection('Distributors').get();
+    var allData = workers.docs.map((doc) => doc.data()).toList();
+    var name = workers.docs.map((doc) => doc.get('name')).toList();
+    var emails = workers.docs.map((doc) => doc.get('email')).toList();
+    for (var i = 0; i < allData.length; i++) {
+      if (emails[i] == email.text) {
+        prefUtils.setName(name[i]);
+        prefUtils.setRole("Distributor");
+      }
+    }
+  }
 
 
   @override
@@ -207,37 +224,58 @@ class _LoginScreenState extends State<LoginScreen> {
                                             if(key.currentState!.validate()){
                                               setState(() {});
                                               isLoading = true;
-                                              try {
-                                                FirebaseAuth.instance.signInWithEmailAndPassword(
-                                                    email: email.text, password: password.text).then((value) {
+                                              signIn().whenComplete((){
+                                                try {
+                                                  FirebaseAuth.instance.signInWithEmailAndPassword(
+                                                      email: email.text, password: password.text).then((value) {
+                                                    final snackBar = SnackBar(
+                                                      /// need to set following properties for best effect of awesome_snackbar_content
+                                                      elevation: 0,
+                                                      behavior: SnackBarBehavior.floating,
+                                                      backgroundColor: Colors.transparent,
+                                                      content: AwesomeSnackbarContent(
+                                                        title: 'Login Successfully',
+                                                        message: 'Login successfully done to the Textile-Services',
+                                                        /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                                                        contentType: ContentType.success,
+                                                      ),
+                                                    );
+                                                    ScaffoldMessenger.of(context)
+                                                      ..hideCurrentSnackBar()
+                                                      ..showSnackBar(snackBar);
+                                                    setState(() {});
+                                                    isLoading = false;
+                                                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
+                                                  }).onError((error, stackTrace) {
+                                                    final snackBar = SnackBar(
+                                                      /// need to set following properties for best effect of awesome_snackbar_content
+                                                      elevation: 0,
+                                                      behavior: SnackBarBehavior.floating,
+                                                      backgroundColor: Colors.transparent,
+                                                      content: AwesomeSnackbarContent(
+                                                        title: 'Something went wrong',
+                                                        inMaterialBanner: true,
+                                                        message: error.toString().split(']')[1],
+                                                        /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                                                        contentType: ContentType.failure,
+                                                      ),
+                                                    );
+                                                    ScaffoldMessenger.of(context)
+                                                      ..hideCurrentSnackBar()
+                                                      ..showSnackBar(snackBar);
+                                                    setState(() {});
+                                                    isLoading = false;
+                                                  });
+                                                }catch(error){
+                                                  print(error.toString());
                                                   final snackBar = SnackBar(
                                                     /// need to set following properties for best effect of awesome_snackbar_content
                                                     elevation: 0,
                                                     behavior: SnackBarBehavior.floating,
                                                     backgroundColor: Colors.transparent,
                                                     content: AwesomeSnackbarContent(
-                                                      title: 'Login Successfully',
-                                                      message: 'Login successfully done to the Textile-Services',
-                                                      /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
-                                                      contentType: ContentType.success,
-                                                    ),
-                                                  );
-                                                  ScaffoldMessenger.of(context)
-                                                    ..hideCurrentSnackBar()
-                                                    ..showSnackBar(snackBar);
-                                                  setState(() {});
-                                                  isLoading = false;
-                                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
-                                                }).onError((error, stackTrace) {
-                                                  final snackBar = SnackBar(
-                                                    /// need to set following properties for best effect of awesome_snackbar_content
-                                                    elevation: 0,
-                                                    behavior: SnackBarBehavior.floating,
-                                                    backgroundColor: Colors.transparent,
-                                                    content: AwesomeSnackbarContent(
-                                                      title: 'Something went wrong',
-                                                      inMaterialBanner: true,
-                                                      message: error.toString().split(']')[1],
+                                                      title: 'Somethings went wrong!',
+                                                      message: error.toString(),
                                                       /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
                                                       contentType: ContentType.failure,
                                                     ),
@@ -247,27 +285,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                     ..showSnackBar(snackBar);
                                                   setState(() {});
                                                   isLoading = false;
-                                                });
-                                              }catch(error){
-                                                print(error.toString());
-                                                final snackBar = SnackBar(
-                                                  /// need to set following properties for best effect of awesome_snackbar_content
-                                                  elevation: 0,
-                                                  behavior: SnackBarBehavior.floating,
-                                                  backgroundColor: Colors.transparent,
-                                                  content: AwesomeSnackbarContent(
-                                                    title: 'Somethings went wrong!',
-                                                    message: error.toString(),
-                                                    /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
-                                                    contentType: ContentType.failure,
-                                                  ),
-                                                );
-                                                ScaffoldMessenger.of(context)
-                                                  ..hideCurrentSnackBar()
-                                                  ..showSnackBar(snackBar);
-                                                setState(() {});
-                                                isLoading = false;
-                                              }
+                                                }
+                                              });
                                             }
                                           });
                                            return;
@@ -291,25 +310,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                             margin: EdgeInsets.symmetric(horizontal: size.width*0.250),
                                             child: CircularProgressIndicator(color: AppConstant.backgroundColor,)),
                                       ),
-                                      // MaterialButton(
-                                      //   onPressed: (){
-                                      //     if(key.currentState!.validate()){
-                                      //
-                                      //     }
-                                      //   },
-                                      //   minWidth: size.width * 0.5,
-                                      //   height: size.height * 0.058,
-                                      //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                      //   color: AppConstant.buttonColor,
-                                      //   child:  Text("Login",
-                                      //     style: TextStyle(
-                                      //       fontSize: size.height * 0.03,
-                                      //       letterSpacing: 2.5,
-                                      //       fontFamily: AppConstant.medium,
-                                      //       color: AppConstant.backgroundColor,
-                                      //     ),
-                                      //   ),
-                                      // ),
                                       SizedBox(height: size.height * 0.023),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.center,

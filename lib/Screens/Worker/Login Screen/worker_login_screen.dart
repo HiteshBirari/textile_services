@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:textile_service/Screens/Worker/Home%20Screen/worker_home_screen.dart';
 import 'package:textile_service/Utils/pref_utils.dart';
-
 import '../../../Utils/ClipperPath.dart';
 import '../../../Utils/app_constant.dart';
 import '../../Distributor/HomeScreen.dart';

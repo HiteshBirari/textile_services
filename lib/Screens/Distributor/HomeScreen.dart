@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:textile_service/Utils/pref_utils.dart';
 import '../../Utils/ClipperPath.dart';
 import '../../Utils/app_constant.dart';
 import 'Add Item/AddItemScreen.dart';
@@ -28,9 +28,23 @@ class _HomeScreenState extends State<HomeScreen> {
     DataModel('Completed Work','Assets/Images/complited1.png',55,Colors.green),
   ];
 
+   PrefUtils prefUtils = PrefUtils();
+
+
+  Future<void> getData()async{
+    prefUtils.getName();
+  }
+
   // List title =  ['Total Worker','Total Items','Pending Work','Completed Work'];
   // List images = ['assets/user1.png','assets/totalitem1.png','assets/pending1.png','assets/complited1.png'];
   // List counts = ['100','150','95','5'];
+
+  @override
+  void initState() {
+    getData();
+    setState(() {});
+    super.initState();
+  }
 
 
   @override
@@ -96,11 +110,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             SizedBox(height: height*0.02),
                             Expanded(
                               child: Text(
-                               '${FirebaseAuth.instance.currentUser!.email}',
+                               prefUtils.getName(),
                                 style: TextStyle(
                                     fontSize: 16,
                                     color: AppConstant.backgroundColor,
-                                    fontWeight: FontWeight.w600),
+                                    fontWeight: FontWeight.w600
+                                ),
                               ),
                             ),
                           ],
@@ -132,7 +147,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           'logout.svg', "Log Out", () {
                         Navigator.of(context)
                             .push( MaterialPageRoute<String>(
-                            builder: (context) => const AddWorkerScreen()));
+                            builder: (context) => const AddWorkerScreen()
+                        ));
                       }),
                     ],
                   ),
@@ -173,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                          ),
                        children: [
                          Container(
-                           padding: EdgeInsets.only(top: statusBarHeight * 1.5),
+                           padding: EdgeInsets.only(top: statusBarHeight * 1.5, left: width * 0.02),
                            margin: EdgeInsets.fromLTRB(0, 0, width*.03, height*.02),
                            child: Row(
                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -214,10 +230,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                ),
                                SizedBox(height: height*0.001),
                                Text(
-                                 'Hello, ${FirebaseAuth.instance.currentUser!.email}',
+                                 'Hello, ${prefUtils.getName()}',
                                  style: TextStyle(
                                      color: AppConstant.backgroundColor,
-                                     fontSize: width*.09,
+                                     fontSize: width*.08,
                                      fontWeight: FontWeight.w600),
                                ),
                              ],

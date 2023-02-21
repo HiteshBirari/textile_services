@@ -6,6 +6,7 @@ import 'package:textile_service/Screens/Distributor/HomeScreen.dart';
 import 'package:textile_service/Screens/Distributor/Register%20Screen/Database/distributor_database.dart';
 import 'package:textile_service/Screens/Distributor/Register%20Screen/Models/distributor_model.dart';
 import 'package:textile_service/Utils/app_constant.dart';
+import 'package:textile_service/Utils/pref_utils.dart';
 import '../../../Utils/ClipperPath.dart';
 import '../Login Screen/login_screen.dart';
 
@@ -30,6 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? role;
   DistributorDatabase db = DistributorDatabase();
   RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  PrefUtils prefUtils = PrefUtils();
 
   @override
   Widget build(BuildContext context) {
@@ -308,9 +310,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 email: email.text,
                                                 lastUpdatedTime: DateTime.now(),
                                             ));
+                                                prefUtils.setName(name.text);
+                                                prefUtils.setRole("Distributor");
                                           }).then((value) {
                                             final snackBar = SnackBar(
-                                              /// need to set following properties for best effect of awesome_snackbar_content
                                               elevation: 0,
                                               behavior: SnackBarBehavior
                                                   .floating,
@@ -319,7 +322,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               content: AwesomeSnackbarContent(
                                                 title: 'Registration Successfully',
                                                 message: 'Registration successfully done to the Textile-Services',
-                                                /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
                                                 contentType: ContentType.success,
                                               ),
                                             );

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:textile_service/Screens/Distributor/HomeScreen.dart';
+import 'package:textile_service/Screens/Worker/Home%20Screen/worker_home_screen.dart';
 import 'package:textile_service/Utils/app_constant.dart';
+import 'package:textile_service/Utils/pref_utils.dart';
 import '../LoginType/SelectLoginType.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,6 +18,14 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
 
   String version = "";
+  String name = "";
+  String role = "";
+  PrefUtils prefUtils = PrefUtils();
+
+  Future<void> getData()async{
+    name = prefUtils.getName();
+    role = prefUtils.getRole();
+  }
 
   Future<void> getAppVersion()async{
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -24,11 +34,19 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+
 
   Future<void> goToNextPage()async{
     Future.delayed(const Duration(seconds: 2),()async{
-    await _firebaseAuth.currentUser == null ? Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SelectLoginType()), (route) => false):Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
+      if(name.isEmpty){
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SelectLoginType()), (route) => false);
+      }else{
+        if(role == "Distributor"){
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
+        }else{
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const WorkerHomeScreen()), (route) => false);
+        }
+      }
     });
   }
 
@@ -36,7 +54,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     getAppVersion().whenComplete((){
-      goToNextPage();
+      getData().whenComplete((){
+        goToNextPage();
+      });
     });
     super.initState();
   }
