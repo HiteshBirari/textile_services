@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:textile_service/Utils/app_constant.dart';
-
-import '../../../Utils/Authentication.dart';
 import '../../../Utils/ClipperPath.dart';
 import '../HomeScreen.dart';
 import '../Register Screen/register_screen.dart';

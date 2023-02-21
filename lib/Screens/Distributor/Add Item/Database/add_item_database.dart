@@ -2,21 +2,20 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:textile_service/Screens/Distributor/Add%20Worker/Models/add_worker_model.dart';
+import '../Models/add_item_model.dart';
 
-class AddWorkerDatabase {
-  static final AddWorkerDatabase _databaseInstance = AddWorkerDatabase._();
+class AddItemDatabase {
+  static final AddItemDatabase _databaseInstance = AddItemDatabase._();
 
-  factory AddWorkerDatabase() {
+  factory AddItemDatabase() {
     return _databaseInstance;
   }
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  AddWorkerDatabase._();
+  AddItemDatabase._();
 
-  Future<bool> addWorker({required AddWorkerModel data}) async {
+  Future<bool> addItem({required AddItemModel data}) async {
     try {
       await FirebaseFirestore.instance
           .collection('Workers')
@@ -29,10 +28,10 @@ class AddWorkerDatabase {
     }
   }
 
-  Future<bool> updateWorker({required AddWorkerModel data}) async {
+  Future<bool> updateItem({required AddItemModel data}) async {
     try {
       await FirebaseFirestore.instance
-          .collection('Workers')
+          .collection('Items')
           .doc(data.docID)
           .update(data.toMap());
       return true;
@@ -42,10 +41,10 @@ class AddWorkerDatabase {
     }
   }
 
-  Future<bool> deleteWorker(AddWorkerModel data) async {
+  Future<bool> deleteItem(AddItemModel data) async {
     try {
       await FirebaseFirestore.instance
-          .collection('Workers')
+          .collection('Items')
           .doc(data.docID)
           .delete();
       return true;
@@ -59,27 +58,27 @@ class AddWorkerDatabase {
 
 
 
-  Future<List<AddWorkerModel>?> getAllWorkers() async {
-    List<AddWorkerModel> workersList = [];
+  Future<List<AddItemModel>?> getAllItem() async {
+    List<AddItemModel> itemList = [];
     try {
       var snap = await FirebaseFirestore.instance
-          .collection('Workers')
+          .collection('Items')
           .get();
       snap.docs.forEach((doc) {
-        workersList.add(AddWorkerModel.fromFirestore(doc));
+        itemList.add(AddItemModel.fromFirestore(doc));
       });
-      return workersList;
+      return itemList;
     } catch (err) {
       print(err);
-      return workersList;
+      return itemList;
     }
   }
 
-  Future<int> getWorkerCount() async {
+  Future<int> getItemCount() async {
     int count = 0;
     try {
       var snap =
-      await FirebaseFirestore.instance.collection('Workers').where('distributor',isEqualTo:_auth.currentUser!.email).count().get();
+      await FirebaseFirestore.instance.collection('Items').where('distributor',isEqualTo:_auth.currentUser!.email).count().get();
       count = snap.count;
       return count;
     } catch (err) {
@@ -88,9 +87,9 @@ class AddWorkerDatabase {
     }
   }
 
-  Stream<QuerySnapshot> listenWorker() {
+  Stream<QuerySnapshot> listenItem() {
     return FirebaseFirestore.instance
-        .collection('Workers').where('distributor',isEqualTo:_auth.currentUser!.email)
+        .collection('Items').where('distributor',isEqualTo:_auth.currentUser!.email)
         .orderBy("lastUpdatedTime", descending: true)
         .snapshots();
   }

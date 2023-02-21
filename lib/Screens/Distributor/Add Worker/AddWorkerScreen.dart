@@ -23,6 +23,7 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
   final key = GlobalKey<FormState>();
   FirebaseAuth auth = FirebaseAuth.instance;
   AddWorkerDatabase db = AddWorkerDatabase();
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +121,13 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                           FilteringTextInputFormatter.deny(
                               RegExp(r'[^a-zA-Z\s]')),
                         ],
-                        onChanged: () {},
+                        onChanged: () {
+                          if(workerPhoneNumber.text.isNotEmpty){
+                          setState(() {
+                            workerPassword.text = '${workerName.text}@${workerPhoneNumber.text.substring(0, 2).toString()}';
+                          });
+                          }
+                        },
                         validator: (value) {
                           if (value!.isEmpty) {
                             return "Enter your name";
@@ -160,8 +167,7 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                         ],
                         onChanged: () {
                           setState(() {
-                            workerPassword.text =
-                                ' ${workerName.text}@${workerPhoneNumber.text.substring(0, 2).toString()}';
+                            workerPassword.text = '${workerName.text}@${workerPhoneNumber.text.substring(0, 2).toString()}';
                           });
                         },
                         validator: (value) {
@@ -199,6 +205,8 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                       MaterialButton(
                         onPressed: () {
                           if (key.currentState!.validate()) {
+                            setState(() {});
+                            isLoading = true;
                             db.addWorker(data: AddWorkerModel(
                                 name: workerName.text,
                                 mobileNumber: workerPhoneNumber.text,
@@ -207,7 +215,15 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                                 password: workerPassword.text,
                                 distributorEmail: auth.currentUser!.email!,
                                 lastUpdatedTime: DateTime.now(),
-                            ));
+                            )).then((value){
+                              AppConstant().showToast('Worker Added Successfully');
+                              setState(() {});
+                              isLoading = false;
+                            }).onError((error, stackTrace){
+                              AppConstant().showToast('${error.toString().split(']')[1]}');
+                              setState(() {});
+                              isLoading = false;
+                            });
                           }
                         },
                         height: height * 0.06,
@@ -216,7 +232,7 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Container(
+                        child: !isLoading ? Container(
                           margin:
                               EdgeInsets.symmetric(horizontal: width * 0.235),
                           child: Text(
@@ -226,7 +242,9 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500),
                           ),
-                        ),
+                        ): Container(
+                      margin: EdgeInsets.symmetric(horizontal: width*0.250),
+                    child: CircularProgressIndicator(color: AppConstant.backgroundColor,)),
                       ),
                     ],
                   ),

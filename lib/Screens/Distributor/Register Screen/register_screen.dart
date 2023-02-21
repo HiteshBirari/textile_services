@@ -1,5 +1,4 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -7,7 +6,6 @@ import 'package:textile_service/Screens/Distributor/HomeScreen.dart';
 import 'package:textile_service/Screens/Distributor/Register%20Screen/Database/distributor_database.dart';
 import 'package:textile_service/Screens/Distributor/Register%20Screen/Models/distributor_model.dart';
 import 'package:textile_service/Utils/app_constant.dart';
-import '../../../Utils/Authentication.dart';
 import '../../../Utils/ClipperPath.dart';
 import '../Login Screen/login_screen.dart';
 
