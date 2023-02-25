@@ -45,6 +45,9 @@ dependencies:
   awesome_snackbar_content: ^0.1.0
   shared_preferences: ^2.0.17
   fluttertoast: ^8.2.1
+  qr_code_scanner: ^1.0.1
+  flutter_spinkit: ^5.1.0
+  percent_indicator: ^4.2.2
 
 
   # The following adds the Cupertino Icons font to your application.

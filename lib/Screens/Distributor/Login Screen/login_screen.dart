@@ -36,8 +36,8 @@ class _LoginScreenState extends State<LoginScreen> {
     var name = workers.docs.map((doc) => doc.get('name')).toList();
     var emails = workers.docs.map((doc) => doc.get('email')).toList();
     for (var i = 0; i < allData.length; i++) {
-      if (emails[i] == email.text) {
-        prefUtils.setName(name[i]);
+      if (email.text == emails[i]) {
+        prefUtils.setName(name[i].toString());
         prefUtils.setRole("Distributor");
       }
     }
