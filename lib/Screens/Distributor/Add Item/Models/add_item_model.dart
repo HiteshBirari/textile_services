@@ -1,12 +1,13 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AddItemModel{
 
   String itemName;
   num itemPrice;
-  String? itemImage;
+  Reference? itemImage;
   final String distributorEmail;
   final DateTime lastUpdatedTime;
   String? docID;
@@ -18,7 +19,7 @@ class AddItemModel{
     return AddItemModel(
         itemName: data!["itemName"],
         itemPrice: data["itemPrice"],
-        itemImage: data['itemImage'],
+        itemImage: FirebaseStorage.instance.ref(data['image']),
         distributorEmail: data['distributor'],
         lastUpdatedTime: DateTime.parse(data['lastUpdatedTime'].toDate().toString()),
         docID: doc.id
@@ -29,7 +30,7 @@ class AddItemModel{
     Map<String, dynamic> data = {
       'itemName': itemName,
       'itemPrice': itemPrice,
-      'itemImage': itemImage,
+      'itemImage':itemImage == null ? "" : itemImage!.fullPath,
       'distributor' : distributorEmail,
       'lastUpdatedTime': lastUpdatedTime,
     };

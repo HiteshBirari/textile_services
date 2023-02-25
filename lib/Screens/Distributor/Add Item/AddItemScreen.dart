@@ -1,7 +1,9 @@
 
+import 'dart:html';
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:textile_service/Screens/Distributor/Add%20Item/Models/add_item_model.dart';
+import 'package:textile_service/Service/storage.dart';
 
 import '../../../Utils/ClipperPath.dart';
 import '../../../Utils/app_constant.dart';
@@ -28,6 +31,10 @@ class _AddItemScreenState extends State<AddItemScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
   AddItemDatabase db = AddItemDatabase();
   bool isLoading = false;
+  PlatformFile? imageFile;
+  Uint8List? imageBytes;
+
+  Storage storage =  Storage();
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +42,21 @@ class _AddItemScreenState extends State<AddItemScreen> {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
     final double statusBarHeight= MediaQuery.of(context).padding.top;
+
+
+    Future<void> getImage() async {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.custom,
+          allowMultiple: false,
+          allowedExtensions: ["png", "jpg"]);
+
+      if (result != null) {
+        setState(() {
+          imageFile = result.files.first;
+          imageBytes = result.files.first.bytes;
+        });
+      }
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFe9f0fb),
@@ -151,14 +173,15 @@ class _AddItemScreenState extends State<AddItemScreen> {
                         strokeCap: StrokeCap.butt,
                         child: GestureDetector(
                           onTap: ()async{
-                            final itemImage1 = await ImagePicker().pickImage(source: ImageSource.gallery,imageQuality:25);
-                            if(itemImage1 == null) return;
-                            final finalItemImage = File(itemImage1.path.toString());
-                            setState(() {
-                              itemImage = finalItemImage;
-                            });
+                            // final itemImage1 = await ImagePicker().pickImage(source: ImageSource.gallery,imageQuality:25);
+                            // if(itemImage1 == null) return;
+                            // final finalItemImage = File(itemImage1.path.toString());
+                            // setState(() {
+                            //   itemImage = finalItemImage;
+                            // });
+                            getImage();
                           },
-                          child:itemImage == null ?
+                          child:imageFile == null ?
                           Container(
                            height: height * 0.16,
                           width: width*0.80,
@@ -182,7 +205,9 @@ class _AddItemScreenState extends State<AddItemScreen> {
                                   borderRadius: BorderRadius.circular(12),
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: FileImage(itemImage!),
+                                image: MemoryImage(
+                                  imageBytes!,
+                                ),
                               ),
                             ),
                           ),
@@ -192,13 +217,17 @@ class _AddItemScreenState extends State<AddItemScreen> {
                           height: height*0.05,
                         ),
                         MaterialButton(
-                          onPressed: () {
-                         if (key.currentState!.validate()) {
+                          onPressed: ()async {
+                         if (key.currentState!.validate())  {
                            setState(() {});
                            isLoading = true;
                            db.addItem(data: AddItemModel(
                                itemName: itemName.text,
                                itemPrice: num.parse(itemPrice.text),
+                               itemImage: (await storage.uploadFile(
+                               imageFile!,
+                               'Items/',
+                                   '${itemName.text}_item'))!,
                                distributorEmail: auth.currentUser!.email!,
                                lastUpdatedTime: DateTime.now(),
                            )).then((value){
@@ -303,7 +332,4 @@ class _AddItemScreenState extends State<AddItemScreen> {
       ),
     );
   }
-
-  File? itemImage;
-
 }

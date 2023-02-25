@@ -368,14 +368,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Container(
                       margin: const EdgeInsets.only(left: 10, right: 16),
-                      child: SvgPicture.asset('Assets/Images/$image',height:30,width: 30,color: AppConstant.colordrawerIcon,),
+                      child: SvgPicture.asset('Assets/Images/$image',height:30,width: 30,color: AppConstant.colorDrawerIcon,),
                     ),
                     Expanded(
                       child: Text(
                         desc,
                         style: TextStyle(
                             fontSize: 14,
-                            color: AppConstant.colordrawerIcon,
+                            color: AppConstant.colorDrawerIcon,
                             fontWeight: FontWeight.w500),
                       ),
                     ),
@@ -383,7 +383,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       margin: const EdgeInsets.only(left: 10, right: 6),
                       child: Icon(
                         Icons.chevron_right,
-                        color: AppConstant.colordrawerIcon,
+                        color: AppConstant.colorDrawerIcon,
                         size: 25,
                       ),
                     ),

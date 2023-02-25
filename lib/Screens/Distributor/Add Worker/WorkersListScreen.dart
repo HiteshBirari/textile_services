@@ -251,80 +251,6 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
       }
     });
 
-    // return AnimationLimiter(
-    //   child: ListView.builder(
-    //     shrinkWrap: true,
-    //     padding:EdgeInsets.only(left :width*.05, right:width*.05),
-    //     itemBuilder: (context, index) {
-    //       return AnimationConfiguration.staggeredList(
-    //         position: index,
-    //         duration: const Duration(milliseconds:575),
-    //         child: SlideAnimation(
-    //           verticalOffset: 56.0,
-    //           child: FadeInAnimation(
-    //             child: InkWell(
-    //                 onTap: null,
-    //                 child: Container(
-    //                   margin:  EdgeInsets.fromLTRB(width*0.03, height*0.00, width*0.03, height*0.02),
-    //                   padding:  EdgeInsets.fromLTRB(width*0.03, 0, width*0.03, 0),
-    //                   decoration:  BoxDecoration(
-    //                       boxShadow: const [
-    //                         BoxShadow(
-    //                           color: Colors.grey,
-    //                           spreadRadius: 0.1,
-    //                           blurRadius: 5.0,
-    //                         ),
-    //                       ],
-    //                       gradient:  LinearGradient(
-    //                           stops:const [0.02, 0.02],
-    //                           colors:[AppConstant.primaryColor, AppConstant.backgroundColor]),
-    //                       borderRadius: const BorderRadius.all( Radius.circular(6.0))),
-    //                   child: Row(
-    //                     mainAxisSize: MainAxisSize.min,
-    //                     crossAxisAlignment: CrossAxisAlignment.start,
-    //                     children: <Widget>[
-    //                       Flexible(
-    //                         child: Container(
-    //                           margin:  const EdgeInsets.all(8.0),
-    //                           child: Column(
-    //                             mainAxisSize: MainAxisSize.min,
-    //                             crossAxisAlignment: CrossAxisAlignment.start,
-    //                             children: <Widget>[
-    //                               Container(
-    //                                   child: const Text(
-    //                                     'Worker Name',
-    //                                     style: TextStyle(
-    //                                         fontWeight: FontWeight.w600,
-    //                                         fontSize: 14),
-    //                                   )),
-    //                               const SizedBox(height: 3),
-    //                               Row(
-    //                                 children:const [
-    //                                    Expanded(
-    //                                     child: Text(
-    //                                       'WorkersDetails',
-    //                                       style: TextStyle(
-    //                                           fontWeight: FontWeight.w500,
-    //                                           fontSize: 14),
-    //                                     ),
-    //                                   ),
-    //                                 ],
-    //                               ),
-    //                             ],
-    //                           ),
-    //                         ),
-    //                       ),
-    //                       Icon(Icons.arrow_back_ios, color: AppConstant.backgroundColor, ),
-    //                     ],
-    //                   ),
-    //                 )),
-    //           ),
-    //         ),
-    //       );
-    //     },
-    //     itemCount: 10,
-    //   ),
-    // );
   }
 
   TextEditingController workerName = TextEditingController();
@@ -407,7 +333,7 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                                           },
                                           height: height * 0.05,
                                           elevation: 3,
-                                          color: AppConstant.colordrawerIcon,
+                                          color: AppConstant.colorDrawerIcon,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(10),
                                           ),
@@ -563,6 +489,7 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                             lastUpdatedTime: DateTime.now(),
                           )).then((value){
                             AppConstant().showToast('Worker Updated Successfully');
+                            Navigator.pop(context);
                             setState(() {
                               isLoading = false;
                             });
@@ -575,7 +502,7 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                         },
                         height: height * 0.06,
                         elevation: 3,
-                        color: AppConstant.successcolor,
+                        color: AppConstant.successColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -601,7 +528,7 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                         },
                         height: height * 0.06,
                         elevation: 3,
-                        color: AppConstant.colordrawerIcon,
+                        color: AppConstant.colorDrawerIcon,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),

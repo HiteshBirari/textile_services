@@ -18,7 +18,7 @@ class AddItemDatabase {
   Future<bool> addItem({required AddItemModel data}) async {
     try {
       await FirebaseFirestore.instance
-          .collection('Workers')
+          .collection('Items')
           .doc()
           .set(data.toMap());
       return true;

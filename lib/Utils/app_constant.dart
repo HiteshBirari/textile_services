@@ -13,8 +13,8 @@ class AppConstant{
   static Color borderColor = const Color(0xFF424242);
   static Color errorColor = const Color(0xFFFF0000);
   static Color grey = Colors.grey.shade400;
-  static Color colordrawerIcon = Color(0xff727272);
-  static Color successcolor = Colors.green;
+  static Color colorDrawerIcon = const Color(0xff727272);
+  static Color successColor = Colors.green;
 
 
   //Fonts

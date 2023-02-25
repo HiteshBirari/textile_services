@@ -1,6 +1,7 @@
 
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:textile_service/Screens/Distributor/Add%20Worker/Models/add_worker_model.dart';
 
 class AddWorkerDatabase {
@@ -11,7 +12,7 @@ class AddWorkerDatabase {
   }
 
   AddWorkerDatabase._();
-
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
   Future<bool> addWorker({required AddWorkerModel data}) async {
     try {
       await FirebaseFirestore.instance
@@ -86,7 +87,7 @@ class AddWorkerDatabase {
 
   Stream<QuerySnapshot> listenWorker() {
     return FirebaseFirestore.instance
-        .collection('Workers')
+        .collection('Workers').where("distributor", isEqualTo: firebaseAuth.currentUser!.email)
         .orderBy("lastUpdatedTime", descending: true)
         .snapshots();
   }
