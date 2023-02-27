@@ -137,16 +137,17 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
     return StreamBuilder<QuerySnapshot>(
        stream: AddWorkerDatabase().listenWorker(),
         builder: (context, snapshot){
-      if (snapshot.data == null){
-        return Center(
+      if (snapshot.connectionState == ConnectionState.waiting){
+        return const Center(
           child: CircularProgressIndicator(),
         );
-      }else if(snapshot.data!.docs.isEmpty) {
+      }else if(snapshot.data == null || snapshot.data!.docs.length == 0) {
         return const Center(
           child: Text('No any Workers/Please add worker first',
             style:  TextStyle(
                 fontWeight: FontWeight.w400,
-                fontSize: 14),
+                fontSize: 14
+            ),
           ),
         );
       }else{
