@@ -28,7 +28,7 @@ class AppConstant{
      Fluttertoast.showToast(
          msg: msg!,
          toastLength: Toast.LENGTH_SHORT,
-         gravity: ToastGravity.CENTER,
+         gravity: ToastGravity.BOTTOM,
          timeInSecForIosWeb: 1,
          backgroundColor: Colors.black54,
          textColor: Colors.white,

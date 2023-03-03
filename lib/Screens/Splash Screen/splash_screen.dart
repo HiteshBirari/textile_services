@@ -44,7 +44,7 @@ class _SplashScreenState extends State<SplashScreen> {
         if(role == "Distributor"){
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
         }else{
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const WorkerHomeScreen()), (route) => false);
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => WorkerHomeScreen()), (route) => false);
         }
       }
     });

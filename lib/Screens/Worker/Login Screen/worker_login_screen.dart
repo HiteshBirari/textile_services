@@ -1,13 +1,11 @@
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:textile_service/Screens/Worker/Home%20Screen/worker_home_screen.dart';
 import 'package:textile_service/Utils/pref_utils.dart';
 import '../../../Utils/ClipperPath.dart';
 import '../../../Utils/app_constant.dart';
-import '../../Distributor/HomeScreen.dart';
 
 
 class WorkerLoginScreen extends StatefulWidget {
@@ -23,77 +21,33 @@ class _WorkerLoginScreenState extends State<WorkerLoginScreen> {
   TextEditingController password = TextEditingController();
   bool isVisible = true;
   bool isLoading = false;
+  bool isCorrect = false;
+  List<dynamic> names = [];
+  List<dynamic> passwords2 = [];
   final key = GlobalKey<FormState>();
   PrefUtils prefUtils = PrefUtils();
   RegExp emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 
 
-  signIn() async {
-    try {
-      setState(() {
-        isLoading = true;
-      });
-
-      QuerySnapshot workers =
-      await FirebaseFirestore.instance.collection('Workers').get();
-
-      var allData = workers.docs.map((doc) => doc.data()).toList();
-      var passwords = workers.docs.map((doc) => doc.get('password')).toList();
-      var name = workers.docs.map((doc) => doc.get('user_name')).toList();
-      var id = workers.docs.map((doc) => doc.id).toList();
-      for (var i = 0; i < allData.length; i++) {
-        if (userName.text == name[i] && password.text == passwords[i]) {
-          final snackBar = SnackBar(
-            elevation: 0,
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.transparent,
-            content: AwesomeSnackbarContent(
-              title: 'Login Successfully',
-              message: 'Login successfully done to the Textile-Services',
-              contentType: ContentType.success,
-            ),
-          );
-          prefUtils.setName(userName.text);
-          prefUtils.setRole("Worker");
-          prefUtils.setWorkerID(id[i]);
-          if(!mounted) return;
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(snackBar);
-          setState(() {});
-          isLoading = false;
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const WorkerHomeScreen()), (route) => false);
-        } else {
-          final snackBar = SnackBar(
-            /// need to set following properties for best effect of awesome_snackbar_content
-            elevation: 0,
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.transparent,
-            content: AwesomeSnackbarContent(
-              title: 'Something went wrong',
-              inMaterialBanner: true,
-              message: "Username and password are not match.",
-              /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
-              contentType: ContentType.failure,
-            ),
-          );
-          if(!mounted) return;
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(snackBar);
-          setState(() {});
-          isLoading = false;
-        }
-      }
-    } catch (e) {
-      // TODO
-      setState(() {
-        isLoading = false;
-      });
-    }
+  Future<void> signIn() async {
     setState(() {
-      isLoading = false;
+      isLoading = true;
     });
+    QuerySnapshot workers =
+    await FirebaseFirestore.instance.collection('Workers').get();
+    var allData = workers.docs.map((doc) => doc.data()).toList();
+    var passwords = workers.docs.map((doc) => doc.get('password')).toList();
+    var name = workers.docs.map((doc) => doc.get('name')).toList();
+    var mobileNumber = workers.docs.map((doc) => doc.get('mobileNumber')).toList();
+    var id = workers.docs.map((doc) => doc.id).toList();
+    for (var i = 0; i < allData.length; i++) {
+      names.addAll(name);
+      passwords2.addAll(passwords);
+      if(userName.text == name[i]){
+        prefUtils.setWorkerID(id[i]);
+        prefUtils.setPhoneNumber(mobileNumber[i]);
+      }
+    }
   }
 
   @override
@@ -168,7 +122,7 @@ class _WorkerLoginScreenState extends State<WorkerLoginScreen> {
                                     ),
                                     SizedBox(height: size.height * 0.04),
                                     TextFormField(
-                                      keyboardType: TextInputType.emailAddress,
+                                      keyboardType: TextInputType.name,
                                       textInputAction: TextInputAction.next,
                                       cursorColor: AppConstant.primaryTextDarkColor,
                                       controller: userName,
@@ -179,30 +133,30 @@ class _WorkerLoginScreenState extends State<WorkerLoginScreen> {
                                         color: AppConstant.primaryTextDarkColor,
                                       ),
                                       decoration: InputDecoration(
-                                        prefixIcon: Icon(Icons.email, color: AppConstant.primaryColor, size: 22,),
+                                        prefixIcon: Icon(Icons.account_circle, color: AppConstant.primaryColor, size: 22,),
                                         enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: AppConstant.primaryColor),
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: AppConstant.primaryColor),
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                         ),
                                         disabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: AppConstant.primaryColor),
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                         ),
                                         errorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: AppConstant.errorColor),
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                         ),
                                         focusedErrorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: AppConstant.errorColor),
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                         ),
                                         labelText: 'Username',
                                         labelStyle: TextStyle(color: Colors.grey[600]),
-                                        contentPadding: EdgeInsets.fromLTRB(15, 3, 0, 0),
+                                        contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                         hintStyle: TextStyle(color: Colors.grey[600]),
                                       ),
                                       validator: (value){
@@ -237,27 +191,27 @@ class _WorkerLoginScreenState extends State<WorkerLoginScreen> {
                                         ),
                                         enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: AppConstant.primaryColor),
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: AppConstant.primaryColor),
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                         ),
                                         disabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: AppConstant.primaryColor),
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                         ),
                                         errorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: AppConstant.errorColor),
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                         ),
                                         focusedErrorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(color: AppConstant.errorColor),
-                                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                                          borderRadius: const BorderRadius.all(Radius.circular(5)),
                                         ),
                                         labelText: 'Password',
                                         labelStyle: TextStyle(color: Colors.grey[600]),
-                                        contentPadding: EdgeInsets.fromLTRB(15, 3, 0, 0),
+                                        contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                         hintStyle: TextStyle(color: Colors.grey[600]),
                                       ),
                                       validator: (value){
@@ -269,9 +223,56 @@ class _WorkerLoginScreenState extends State<WorkerLoginScreen> {
                                     ),
                                     SizedBox(height: size.height * 0.04),
                                     MaterialButton(
-                                      onPressed: () {
+                                      onPressed: () async{
+                                        FocusManager.instance.primaryFocus?.unfocus();
+                                        names.clear();
+                                        passwords2.clear();
                                         if(key.currentState!.validate()){
-                                          signIn();
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          signIn().whenComplete((){
+                                            if(names.contains(userName.text) && passwords2.contains(password.text)){
+                                              prefUtils.setName(userName.text);
+                                              prefUtils.setRole("Worker");
+                                              isLoading = false;
+                                              setState(() {});
+                                              final snackBar2 = SnackBar(
+                                                elevation: 0,
+                                                behavior: SnackBarBehavior.floating,
+                                                backgroundColor: Colors.transparent,
+                                                content: AwesomeSnackbarContent(
+                                                  title: 'Login Successfully',
+                                                  message: 'Login successfully done to the Textile-Services',
+                                                  contentType: ContentType.success,
+                                                ),
+                                              );
+                                              if(!mounted) return;
+                                              ScaffoldMessenger.of(context)
+                                                ..hideCurrentSnackBar()
+                                                ..showSnackBar(snackBar2);
+                                              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => WorkerHomeScreen()), (route) => false);
+                                            }
+                                            else{
+                                              final snackBar = SnackBar(
+                                                elevation: 0,
+                                                behavior: SnackBarBehavior.floating,
+                                                backgroundColor: Colors.transparent,
+                                                content: AwesomeSnackbarContent(
+                                                  title: 'Something went wrong',
+                                                  inMaterialBanner: true,
+                                                  message: "Username and password are not match.",
+                                                  contentType: ContentType.failure,
+                                                ),
+                                              );
+                                              if(!mounted) return;
+                                              ScaffoldMessenger.of(context)
+                                                ..hideCurrentSnackBar()
+                                                ..showSnackBar(snackBar);
+                                              isLoading = false;
+                                              setState(() {});
+                                            }
+                                          });
                                         }
                                         },
                                       height: size.height * 0.06,

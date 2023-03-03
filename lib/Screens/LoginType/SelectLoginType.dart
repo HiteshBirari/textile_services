@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:textile_service/Screens/Distributor/Login%20Screen/login_screen.dart';
+import 'package:textile_service/Screens/Worker/Login%20Screen/worker_login_screen.dart';
 
 import '../../Utils/ClipperPath.dart';
 import '../../Utils/app_constant.dart';
@@ -102,6 +103,7 @@ class _SelectLoginTypeState extends State<SelectLoginType> {
                                   SizedBox(height: size.height * 0.03),
                                   MaterialButton(
                                     onPressed: () {
+                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkerLoginScreen()));
                                     },
                                     height: size.height * 0.06,
                                     elevation: 3,

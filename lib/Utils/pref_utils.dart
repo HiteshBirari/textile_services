@@ -1,5 +1,4 @@
 
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PrefUtils {
@@ -34,6 +33,31 @@ class PrefUtils {
   String getName() {
     try {
       return _sharedPreferences.getString('name') ?? "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+
+  Future<void> setPhoneNumber(String value) {
+    return _sharedPreferences.setString('mobileNumber', value);
+  }
+
+  String getPhoneNumber() {
+    try {
+      return _sharedPreferences.getString('mobileNumber') ?? "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  Future<void> setEmail(String value) {
+    return _sharedPreferences.setString('email', value);
+  }
+
+  String getEmail() {
+    try {
+      return _sharedPreferences.getString('email') ?? "";
     } catch (e) {
       return "";
     }
