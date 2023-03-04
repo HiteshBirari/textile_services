@@ -6,7 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 class AppConstant{
 
   //Colors
-  static Color primaryColor = const Color(0xFF4527A0);
+  static Color primaryColor = const Color(0xFF512DA8);
   static Color backgroundColor = const Color(0xFFF5F5F5);
   static Color buttonColor = const Color(0xFF5E35B1);
   static Color primaryTextDarkColor = const Color(0xFF212121);

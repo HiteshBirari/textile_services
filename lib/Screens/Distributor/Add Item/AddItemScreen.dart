@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,6 +29,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
   AddItemDatabase db = AddItemDatabase();
   bool isLoading = false;
   PlatformFile? imageFile;
+  File? file;
   Uint8List? imageBytes;
 
   Storage storage =  Storage();
@@ -48,7 +51,8 @@ class _AddItemScreenState extends State<AddItemScreen> {
       if (result != null) {
         setState(() {
           imageFile = result.files.first;
-          imageBytes = result.files.first.bytes;
+          file = File(result.files.first.path!);
+          imageBytes = file!.readAsBytesSync();
         });
       }
     }
@@ -162,22 +166,16 @@ class _AddItemScreenState extends State<AddItemScreen> {
                         DottedBorder(
                           borderType: BorderType.RRect,
                           color: AppConstant.primaryColor,
-                          radius: Radius.circular(12),
+                          radius: const Radius.circular(12),
                         strokeWidth: 0.8,
                         dashPattern: [3],
                         strokeCap: StrokeCap.butt,
                         child: GestureDetector(
-                          onTap: ()async{
-                            // final itemImage1 = await ImagePicker().pickImage(source: ImageSource.gallery,imageQuality:25);
-                            // if(itemImage1 == null) return;
-                            // final finalItemImage = File(itemImage1.path.toString());
-                            // setState(() {
-                            //   itemImage = finalItemImage;
-                            // });
+                          onTap: (){
                             getImage();
                           },
                           child:imageFile == null ?
-                          Container(
+                          SizedBox(
                            height: height * 0.16,
                           width: width*0.80,
                        child: Column(
@@ -193,18 +191,11 @@ class _AddItemScreenState extends State<AddItemScreen> {
                             ),
                           ],
                     ),
-              ):Container(
+              )
+                              :SizedBox(
                             height: height * 0.16,
                             width: width*0.80,
-                            decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: MemoryImage(
-                                  imageBytes!,
-                                ),
-                              ),
-                            ),
+                            child: Image.file(file!),
                           ),
                         ),
                       ),
@@ -216,24 +207,36 @@ class _AddItemScreenState extends State<AddItemScreen> {
                          if (key.currentState!.validate())  {
                            setState(() {});
                            isLoading = true;
-                           db.addItem(data: AddItemModel(
+                           if(imageFile == null){
+                             AppConstant().showToast("Select item image.");
+                             setState(() {});
+                             isLoading = false;
+                           }else{
+                             db.addItem(data: AddItemModel(
                                itemName: itemName.text,
                                itemPrice: num.parse(itemPrice.text),
                                itemImage: (await storage.uploadFile(
-                               imageFile!,
-                               'Items/',
-                                   '${itemName.text}_item'))!,
+                                   imageFile!,
+                                   'Items/',
+                                   '${itemName.text}_item',
+                                    imageBytes!,
+                               ))!,
                                distributorEmail: auth.currentUser!.email!,
                                lastUpdatedTime: DateTime.now(),
-                           )).then((value){
-                             AppConstant().showToast('Item Added Successfully');
-                             setState(() {});
-                             isLoading = false;
-                           }).onError((error, stackTrace){
-                             AppConstant().showToast('${error.toString().split(']')[1]}');
-                             setState(() {});
-                             isLoading = false;
-                           });
+                             )).then((value){
+                               itemName.text = "";
+                               itemPrice.text = "";
+                               file = null;
+                               AppConstant().showToast('Item Added Successfully');
+                               setState(() {});
+                               isLoading = false;
+                             }).onError((error, stackTrace){
+                               AppConstant().showToast(error.toString().split(']')[1]);
+                               setState(() {});
+                               isLoading = false;
+                             });
+                           }
+
                          }
                           },
                           height: height * 0.06,

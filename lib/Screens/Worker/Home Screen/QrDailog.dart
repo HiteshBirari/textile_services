@@ -31,7 +31,7 @@ class _QRDialogState extends State<QRDialog> {
       content: Container(
         decoration: BoxDecoration(
             color:  AppConstant.backgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(20.0))
+            borderRadius: const BorderRadius.all(Radius.circular(20.0))
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -40,7 +40,7 @@ class _QRDialogState extends State<QRDialog> {
           children: <Widget>[
             const Padding(
               padding: EdgeInsets.only(
-                  left: 30, right: 30, top: 05, bottom: 10),
+                  left: 30, right: 30, top: 12, bottom: 8),
               child: Text(
                 "QR Code",
                 style: TextStyle(
@@ -66,6 +66,8 @@ class _QRDialogState extends State<QRDialog> {
                 child: QrImage(
                   data: widget.id,
                   version: QrVersions.auto,
+                  foregroundColor: AppConstant.primaryTextDarkColor,
+                  dataModuleStyle: const QrDataModuleStyle(dataModuleShape: QrDataModuleShape.square),
                 ),
               ),
             ),

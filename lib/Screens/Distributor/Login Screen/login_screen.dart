@@ -35,11 +35,10 @@ class _LoginScreenState extends State<LoginScreen> {
     var allData = workers.docs.map((doc) => doc.data()).toList();
     var name = workers.docs.map((doc) => doc.get('name')).toList();
     var phoneNumber = workers.docs.map((doc) => doc.get('mobileNumber')).toList();
-    var address = workers.docs.map((doc) => doc.get('address')).toList();
     var emails = workers.docs.map((doc) => doc.get('email')).toList();
     for (var i = 0; i < allData.length; i++) {
       if (email.text == emails[i]) {
-        prefUtils.setName(name[i].toString());
+        prefUtils.setName(name[i]);
         prefUtils.setPhoneNumber(phoneNumber[i]);
         prefUtils.setEmail(emails[i]);
         prefUtils.setRole("Distributor");
