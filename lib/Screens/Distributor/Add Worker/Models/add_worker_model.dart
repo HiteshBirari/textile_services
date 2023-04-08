@@ -42,6 +42,8 @@ class AddWorkerModel {
       'mobileNumber': mobileNumber,
       'email': email,
       'distributor' : distributorEmail,
+      'password' : password,
+      'address' : address,
       'lastUpdatedTime': lastUpdatedTime,
     };
     return data;
