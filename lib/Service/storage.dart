@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:path/path.dart' as path;
 
@@ -14,7 +15,7 @@ class Storage {
   Storage._();
 
   Future<Reference?> uploadFile(
-      PlatformFile mediaInfo, String ref, String fileName, Uint8List bytes) async {
+      XFile mediaInfo, String ref, String fileName, Uint8List bytes) async {
     try {
       String? mimeType = mime(path.basename(mediaInfo.name));
 

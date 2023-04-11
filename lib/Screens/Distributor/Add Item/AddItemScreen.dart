@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:textile_service/Screens/Distributor/Add%20Item/Models/add_item_model.dart';
 import 'package:textile_service/Service/storage.dart';
 
@@ -28,8 +29,10 @@ class _AddItemScreenState extends State<AddItemScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
   AddItemDatabase db = AddItemDatabase();
   bool isLoading = false;
-  PlatformFile? imageFile;
+  // PlatformFile? imageFile;
+
   File? file;
+  XFile? imageFile;
   Uint8List? imageBytes;
 
   Storage storage =  Storage();
@@ -39,22 +42,19 @@ class _AddItemScreenState extends State<AddItemScreen> {
 
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
-    final double statusBarHeight= MediaQuery.of(context).padding.top;
 
 
-    Future<void> getImage() async {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.custom,
-          allowMultiple: false,
-          allowedExtensions: ["png", "jpg"]);
 
-      if (result != null) {
-        setState(() {
-          imageFile = result.files.first;
-          file = File(result.files.first.path!);
-          imageBytes = file!.readAsBytesSync();
-        });
-      }
+
+    Future<void> getImage()async{
+      final XFile? image = await ImagePicker().pickImage(source: ImageSource.camera);
+       if(image != null){
+         imageBytes = await image.readAsBytes();
+         setState(() {
+           file = File(image.path);
+           imageFile = image;
+         });
+       }
     }
 
     return Scaffold(
