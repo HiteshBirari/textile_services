@@ -14,7 +14,7 @@ class Storage {
 
   Storage._();
 
-  Future<Reference?> uploadFile(
+  Future<String?> uploadFile(
       XFile mediaInfo, String ref, String fileName, Uint8List bytes) async {
     try {
       String? mimeType = mime(path.basename(mediaInfo.name));
@@ -27,7 +27,8 @@ class Storage {
       Reference storageReference =
           storage.ref(ref).child("$fileName.$extension");
       var task = await storageReference.putData(bytes, metadata);
-      return task.ref;
+      String url = await task.ref.getDownloadURL();
+      return url;
     } catch (e) {
       print("File Upload Error $e");
       return null;

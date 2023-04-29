@@ -7,7 +7,7 @@ class AddItemModel{
 
   String itemName;
   num itemPrice;
-  Reference? itemImage;
+  String? itemImage;
   final String distributorEmail;
   final DateTime lastUpdatedTime;
   String? docID;
@@ -19,7 +19,7 @@ class AddItemModel{
     return AddItemModel(
         itemName: data!["itemName"],
         itemPrice: data["itemPrice"],
-        itemImage: FirebaseStorage.instance.ref(data['image']),
+        itemImage: data['image'],
         distributorEmail: data['distributor'],
         lastUpdatedTime: DateTime.parse(data['lastUpdatedTime'].toDate().toString()),
         docID: doc.id
@@ -30,7 +30,7 @@ class AddItemModel{
     Map<String, dynamic> data = {
       'itemName': itemName,
       'itemPrice': itemPrice,
-      'itemImage':itemImage == null ? "" : itemImage!.fullPath,
+      'itemImage':itemImage,
       'distributor' : distributorEmail,
       'lastUpdatedTime': lastUpdatedTime,
     };
