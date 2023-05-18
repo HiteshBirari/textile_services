@@ -19,7 +19,7 @@ class AddItemModel{
     return AddItemModel(
         itemName: data!["itemName"],
         itemPrice: data["itemPrice"],
-        itemImage: data['image'],
+        itemImage: data['itemImage'],
         distributorEmail: data['distributor'],
         lastUpdatedTime: DateTime.parse(data['lastUpdatedTime'].toDate().toString()),
         docID: doc.id

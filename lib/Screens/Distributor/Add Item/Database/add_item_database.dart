@@ -87,9 +87,9 @@ class AddItemDatabase {
     }
   }
 
-  Stream<QuerySnapshot> listenItem() {
+  Stream<QuerySnapshot> listenItem(String email) {
     return FirebaseFirestore.instance
-        .collection('Items').where('distributor',isEqualTo:_auth.currentUser!.email)
+        .collection('Items').where('distributor',isEqualTo: email)
         .orderBy("lastUpdatedTime", descending: true)
         .snapshots();
   }

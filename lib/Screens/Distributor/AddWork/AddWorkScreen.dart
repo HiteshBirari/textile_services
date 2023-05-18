@@ -29,9 +29,18 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
   FirebaseAuth auth = FirebaseAuth.instance;
   AddWorkDatabase db = AddWorkDatabase();
   bool isLoading = false;
+  String email = "";
 
   TextEditingController itemQuantity= TextEditingController();
   TextEditingController totalPrice= TextEditingController();
+
+  @override
+  void initState() {
+    setState(() {
+       email = auth.currentUser!.email!;
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -239,14 +248,33 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
 
 
   Future<void> selectItemSheet()async{
+    Size size = MediaQuery.of(context).size;
     await showModalBottomSheet(
         isScrollControlled: true,
         context: context,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15),
+          topRight: Radius.circular(15),
+        ),),
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext  context, StateSetter setState ){
-                return Padding(
-                  padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom + 20),
+                return Container(
+                  height: size.height * 0.5,
+                  width: size.width,
+                  padding: EdgeInsets.only(
+                      top: size.height * 0.02,
+                      left: size.width * 0.02,
+                      right: size.width * 0.02,
+                      bottom: size.height * 0.02,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppConstant.backgroundColor,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,17 +290,21 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
   _buildListView() {
     final double height = MediaQuery.of(context).size.height;
     final double width = MediaQuery.of(context).size.width;
-
+     final FirebaseAuth auth = FirebaseAuth.instance;
     return StreamBuilder<QuerySnapshot>(
-        stream: AddWorkDatabase().listenWork(),
+        stream: AddItemDatabase().listenItem(email),
         builder: (context, snapshot){
-          if (snapshot.data == null){
+          if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(
-              child: CircularProgressIndicator(),
+              child: Text('Loading......',
+                style:  TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 14),
+              ),
             );
-          }else if(snapshot.data!.docs.isEmpty) {
+          } else if(snapshot.data!.docs.length == 0 || snapshot.data!.docs.isEmpty) {
             return const Center(
-              child: Text('No any Workers/Please add worker first',
+              child: Text('No any Items/Please add item first',
                 style:  TextStyle(
                     fontWeight: FontWeight.w400,
                     fontSize: 14),
@@ -289,13 +321,11 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                     position: index,
                     duration: const Duration(milliseconds:575),
                     child: SlideAnimation(
-                      verticalOffset: 56.0,
+                      verticalOffset: 34.0,
                       child: FadeInAnimation(
                         child: InkWell(
-                          onTap: null,
+                          onTap: (){},
                           child: Container(
-                            margin:  EdgeInsets.fromLTRB(width*0.03, height*0.00, width*0.03, height*0.02),
-                            padding:  EdgeInsets.fromLTRB(width*0.03, 0, width*0.03, 0),
                             decoration:  BoxDecoration(
                                 color: AppConstant.backgroundColor,
                                 boxShadow: const [
@@ -336,7 +366,7 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                                           children: [
                                             Expanded(
                                               child: Text(
-                                                snapshot.data!.docs[index]['itemPrice'],
+                                                "${snapshot.data!.docs[index]['itemPrice']}",
                                                 style: TextStyle(
                                                     fontSize: width*0.035),
                                               ),

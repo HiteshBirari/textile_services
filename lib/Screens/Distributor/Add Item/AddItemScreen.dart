@@ -226,7 +226,7 @@ class _AddItemScreenState extends State<AddItemScreen> {
                              )).then((value){
                                itemName.text = "";
                                itemPrice.text = "";
-                               file = null;
+                               imageFile = null;
                                AppConstant().showToast('Item Added Successfully');
                                setState(() {});
                                isLoading = false;
