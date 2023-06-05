@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:textile_service/Utils/app_constant.dart';
 
@@ -136,7 +137,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
           ),
           Visibility(
             visible: isLoading,
-            child: loaderView(context, loadcolor: Colors.white),
+            child: loaderView(context, loadcolor: AppConstant.primaryColor),
           ),
         ],
       ),
@@ -182,9 +183,14 @@ class _ScannerScreenState extends State<ScannerScreen> {
           isLoading= true;
         });
         await controller.pauseCamera();
-        Navigator.of(context)
-            .push( MaterialPageRoute<String>(
-            builder: (context) =>  AddWorkScreen(workerID:scanData.code!)));
+        if(scanData.code!.contains('TMS')){
+          Navigator.of(context)
+              .push( MaterialPageRoute<String>(
+              builder: (context) =>  AddWorkScreen(workerID:scanData.code!)));
+        }else{
+          AppConstant().showToast('QR Code is not valid', toastGravity: ToastGravity.CENTER);
+          await controller.resumeCamera();
+        }
         setState(() {
           isLoading= false;
         });

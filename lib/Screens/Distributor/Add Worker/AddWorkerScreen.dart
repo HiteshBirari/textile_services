@@ -49,7 +49,7 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
               ),
             ),
             Container(
-              padding: EdgeInsets.only(top: height * 0.06),
+              padding: EdgeInsets.only(top: height * 0.04,left:width*0.01),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -63,9 +63,8 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                           height: 45,
                           width: 40,
                           child: Icon(
-                            Icons.chevron_left,
+                            Icons.arrow_back_ios,
                             color: AppConstant.backgroundColor,
-                            size: 35,
                           ),
                         ),
                       ),
@@ -131,7 +130,7 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                                 onChanged: () {
                                   if(workerPhoneNumber.text.isNotEmpty){
                                     setState(() {
-                                      workerPassword.text = '${workerName.text}@${workerPhoneNumber.text.substring(0, 2).toString()}';
+                                      workerPassword.text = '${workerName.text.trim()}@${workerPhoneNumber.text.substring(0, 2).toString()}';
                                     });
                                   }
                                 },
@@ -174,7 +173,7 @@ class _AddWorkerScreenState extends State<AddWorkerScreen> {
                                 ],
                                 onChanged: () {
                                   setState(() {
-                                    workerPassword.text = '${workerName.text}@${workerPhoneNumber.text.substring(0, 2).toString()}';
+                                    workerPassword.text = '${workerName.text.replaceAll(" ", "")}@${workerPhoneNumber.text.substring(0, 2).toString()}';
                                   });
                                 },
                                 validator: (value) {

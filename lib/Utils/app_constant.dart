@@ -14,6 +14,7 @@ class AppConstant{
   static Color grey = Colors.grey.shade400;
   static Color colorDrawerIcon = const Color(0xff727272);
   static Color successColor = Colors.green;
+  static Color pendingColor =const Color(0xffF49D1A);
 
 
   //Fonts
@@ -23,13 +24,13 @@ class AppConstant{
 
 
    //Toster
-   showToast(String? msg){
+   showToast(String? msg, {ToastGravity? toastGravity}){
      Fluttertoast.showToast(
          msg: msg!,
          toastLength: Toast.LENGTH_SHORT,
-         gravity: ToastGravity.BOTTOM,
+         gravity: toastGravity ?? ToastGravity.BOTTOM,
          timeInSecForIosWeb: 1,
-         backgroundColor: Colors.black54,
+         backgroundColor: Colors.black,
          textColor: Colors.white,
          fontSize: 16.0
      );

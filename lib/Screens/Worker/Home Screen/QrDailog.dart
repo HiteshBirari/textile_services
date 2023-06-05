@@ -40,7 +40,7 @@ class _QRDialogState extends State<QRDialog> {
           children: <Widget>[
             const Padding(
               padding: EdgeInsets.only(
-                  left: 30, right: 30, top: 12, bottom: 8),
+                  left: 30, right: 30, top: 12, bottom: 10),
               child: Text(
                 "QR Code",
                 style: TextStyle(
@@ -64,7 +64,7 @@ class _QRDialogState extends State<QRDialog> {
                 alignment: Alignment.center,
                 color: AppConstant.backgroundColor,
                 child: QrImage(
-                  data: widget.id,
+                  data: 'TMS${widget.id}',
                   version: QrVersions.auto,
                   foregroundColor: AppConstant.primaryTextDarkColor,
                   dataModuleStyle: const QrDataModuleStyle(dataModuleShape: QrDataModuleShape.square),

@@ -30,7 +30,7 @@ Widget loaderView(BuildContext context,{var loadcolor,var backgroundcolor}) => C
 
 buildsmallLoadingView(BuildContext context,{var loadcolor:Colors.white}) {
   return Theme(
-    data: Theme.of(context).copyWith(accentColor:loadcolor ),
+    data: Theme.of(context).copyWith(hintColor:loadcolor ),
     child: SpinKitCircle(
       color:loadcolor,
       size: 32.0,

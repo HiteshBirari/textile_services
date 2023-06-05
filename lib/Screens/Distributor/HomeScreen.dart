@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -163,8 +164,18 @@ class _HomeScreenState extends State<HomeScreen> {
                             builder: (context) => const WorkersListScreen()));
                       }),
                       buildListMenuView(
-                          'logout.svg', "Log Out", () {
-                        _showDialog();
+                          'logout.svg', "Log Out", () async{
+                        await showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),),
+                            builder: (context){
+                          return logout();
+                        }
+                        );
+                        // _showDialog();
                       }),
                     ],
                   ),
@@ -223,8 +234,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: SvgPicture.asset('Assets/Images/menu.svg'),
                                     ),
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
+                                  Bounce(
+                                    duration: const Duration(milliseconds:90),
+                                    onPressed: ()async{
                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>const ScannerScreen()));
                                     },
                                     child: Tooltip(
@@ -272,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               height: height,
               width: width,
-              padding: EdgeInsets.only(top: statusBarHeight*06),
+              padding: EdgeInsets.only(top: statusBarHeight*05),
               child: _buildListView(),
             )
           ],
@@ -415,102 +427,188 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
 
-  _showDialog() async {
-    final double height = MediaQuery.of(context).size.height;
-    final double width = MediaQuery.of(context).size.width;
-    await Future.delayed(const Duration(milliseconds: 1));
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape:  const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all( Radius.circular(20.0))),
-            contentPadding:  const EdgeInsets.only(top: 09),
-            title: Column(
-              children: [
-                Text(
-                  'Logout',
-                  style: TextStyle(
-                      fontSize: width*0.06,
-                      color: AppConstant.primaryTextDarkColor,
-                      fontWeight: FontWeight.w600),
-                ),
-                SizedBox(height: height*0.01),
-                const Divider(
-                  color: Colors.grey,
-                  height: 4.0,
-                ),
-              ],
-            ),
-            content: Padding(
-              padding: const EdgeInsets.only(left: 20.0, right: 10, top: 10.0, bottom: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children:[
-                  Text(
-                    'Are you sure you want to logout?',
-                    style: TextStyle(
-                      fontSize: width*0.06,
-                      color: AppConstant.primaryTextDarkColor.withOpacity(.6),
-                    ),
+  Widget logout() {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(height: screenHeight * 0.03),
+        Text(
+          'LogOut',
+          style: TextStyle(
+              fontSize: screenWidth * .06,
+              color: Colors.red,
+              fontWeight: FontWeight.w600),
+        ),
+        SizedBox(height: screenHeight * 0.04),
+        Text(
+          'Are you sure you want to log out? ',
+          style: TextStyle(
+              fontSize: screenWidth * .05,
+              color: Colors.black,
+              fontWeight: FontWeight.w600),
+        ),
+        SizedBox(height: screenHeight * 0.03),
+        Bounce(
+          duration: const Duration(milliseconds: 110),
+          onPressed:()async{
+            setState(() {
+              prefUtils.clearPreferencesData();
+            });
+            Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context)=>const LoginScreen()),(route) => false);
+          },
+          child: Container(
+            height: screenHeight * 0.06,
+            margin: EdgeInsets.fromLTRB(screenWidth * 0.03, 0,
+                screenWidth * 0.03, screenHeight * 0.01),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                color: AppConstant.primaryColor,
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 5.0,
                   ),
-                  SizedBox(height: height*0.03),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      MaterialButton(
-                        onPressed: () {
-                          setState(() {
-                            prefUtils.clearPreferencesData();
-                          });
-                          Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context)=>const LoginScreen()),(route) => false);
-                        },
-                        height: height * 0.05,
-                        elevation: 3,
-                        color: AppConstant.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: width*0.02),
-                          child: Text(
-                            'Yes',
-                            style: TextStyle(
-                                fontSize: width*0.05,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ),
-                      SizedBox(width:width*0.02),
-                      MaterialButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        height: height * 0.05,
-                        elevation: 3,
-                        color: AppConstant.primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: width*0.02),
-                          child: Text(
-                            'No',
-                            style: TextStyle(
-                                fontSize: width*0.05,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                ]
             ),
-          );
-        });
+            alignment: Alignment.center,
+            // margin: EdgeInsets.symmetric(horizontal: 30.w),
+            child: Text(
+              'Logout',
+              style: TextStyle(
+                  fontSize: screenWidth * 0.05,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
+        ),
+        SizedBox(height: screenHeight * 0.01),
+        Bounce(
+          duration: const Duration(milliseconds: 110),
+          onPressed:()async{
+            Navigator.pop(context);
+          },
+          child: Container(
+            height: screenHeight * 0.06,
+            margin: EdgeInsets.fromLTRB(screenWidth * 0.03, 0,
+                screenWidth * 0.03, screenHeight * 0.01),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              color: Colors.grey.withOpacity(0.5),
+            ),
+            alignment: Alignment.center,
+            // margin: EdgeInsets.symmetric(horizontal: 30.w),
+            child: Text(
+              'Cancel',
+              style: TextStyle(
+                  fontSize: screenWidth * 0.05,
+                  color: AppConstant.primaryColor,
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
+        ),
+        SizedBox(height: screenHeight * 0.03),
+      ],
+    );
   }
+
+  // _showDialog() async {
+  //   final double height = MediaQuery.of(context).size.height;
+  //   final double width = MediaQuery.of(context).size.width;
+  //   await Future.delayed(const Duration(milliseconds: 1));
+  //   showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           shape:  const RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.all( Radius.circular(20.0))),
+  //           contentPadding:  const EdgeInsets.only(top: 09),
+  //           title: Column(
+  //             children: [
+  //               Text(
+  //                 'Logout',
+  //                 style: TextStyle(
+  //                     fontSize: width*0.06,
+  //                     color: AppConstant.primaryTextDarkColor,
+  //                     fontWeight: FontWeight.w600),
+  //               ),
+  //               SizedBox(height: height*0.01),
+  //               const Divider(
+  //                 color: Colors.grey,
+  //                 height: 4.0,
+  //               ),
+  //             ],
+  //           ),
+  //           content: Padding(
+  //             padding: const EdgeInsets.only(left: 20.0, right: 10, top: 10.0, bottom: 20),
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children:[
+  //                 Text(
+  //                   'Are you sure you want to logout?',
+  //                   style: TextStyle(
+  //                     fontSize: width*0.06,
+  //                     color: AppConstant.primaryTextDarkColor.withOpacity(.6),
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: height*0.03),
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.end,
+  //                   crossAxisAlignment: CrossAxisAlignment.end,
+  //                   children: [
+  //                     MaterialButton(
+  //                       onPressed: () {
+  //                         setState(() {
+  //                           prefUtils.clearPreferencesData();
+  //                         });
+  //                         Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context)=>const LoginScreen()),(route) => false);
+  //                       },
+  //                       height: height * 0.05,
+  //                       elevation: 3,
+  //                       color: AppConstant.primaryColor,
+  //                       shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.circular(10),
+  //                       ),
+  //                       child: Container(
+  //                         margin: EdgeInsets.symmetric(horizontal: width*0.02),
+  //                         child: Text(
+  //                           'Yes',
+  //                           style: TextStyle(
+  //                               fontSize: width*0.05,
+  //                               color: Colors.white,
+  //                               fontWeight: FontWeight.w500),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     SizedBox(width:width*0.02),
+  //                     MaterialButton(
+  //                       onPressed: () {
+  //                         Navigator.pop(context);
+  //                       },
+  //                       height: height * 0.05,
+  //                       elevation: 3,
+  //                       color: AppConstant.primaryColor,
+  //                       shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.circular(10),
+  //                       ),
+  //                       child: Container(
+  //                         margin: EdgeInsets.symmetric(horizontal: width*0.02),
+  //                         child: Text(
+  //                           'No',
+  //                           style: TextStyle(
+  //                               fontSize: width*0.05,
+  //                               color: Colors.white,
+  //                               fontWeight: FontWeight.w500),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 )
+  //               ],
+  //             ),
+  //           ),
+  //         );
+  //       });
+  // }
 }

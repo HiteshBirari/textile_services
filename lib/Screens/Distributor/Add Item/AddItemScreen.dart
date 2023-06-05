@@ -102,10 +102,19 @@ class _AddItemScreenState extends State<AddItemScreen> {
               ),
             ),
             Container(
-
-                // padding: EdgeInsets.only(top: height * 0.05, left:width*0.05, right:width*0.05),
-                margin: EdgeInsets.fromLTRB(width*0.40, height*0.12, width*0.05, height*0),
-                child: SvgPicture.asset('Assets/Images/item_add.svg',height:height *0.10,color: AppConstant.backgroundColor,)),
+              margin: EdgeInsets.fromLTRB(width*0.05, height*0.17, width*0.05, height*0),
+              child: Row(
+                children: [
+                  SvgPicture.asset('Assets/Images/item_add.svg',height:height *0.05,color: AppConstant.backgroundColor,),
+                  Text('Add Item',
+                    style: TextStyle(
+                        color: AppConstant.backgroundColor,
+                        fontSize: width*.06,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ],
+              ),
+            ),
             Container(
                 height: height*0.56,
                 width: width,

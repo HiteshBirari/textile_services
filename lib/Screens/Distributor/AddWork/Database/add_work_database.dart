@@ -53,10 +53,6 @@ class AddWorkDatabase {
     }
   }
 
-
-
-
-
   Future<List<AddWorkModel>> getAllWork() async {
     List<AddWorkModel> workList = [];
     try {
@@ -86,10 +82,9 @@ class AddWorkDatabase {
     }
   }
 
-  Stream<QuerySnapshot> listenWork() {
+  Stream<QuerySnapshot> listenWork(String id) {
     return FirebaseFirestore.instance
-        .collection('AssignedWork')
-        .orderBy("lastUpdatedTime", descending: true)
+        .collection('AssignedWork').where('workerId', isEqualTo: id).orderBy("lastUpdatedTime", descending: true)
         .snapshots();
   }
 }

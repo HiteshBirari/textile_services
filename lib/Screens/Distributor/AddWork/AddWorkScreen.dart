@@ -4,6 +4,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -31,6 +32,10 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
   bool isLoading = false;
   String email = "";
 
+  String? item;
+  String? itemImage;
+  String? itemPrice;
+
   TextEditingController itemQuantity= TextEditingController();
   TextEditingController totalPrice= TextEditingController();
 
@@ -38,6 +43,8 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
   void initState() {
     setState(() {
        email = auth.currentUser!.email!;
+       print('WorkerId With ValidationString:${widget.workerID}');
+       print("WorkerId Without ValidationString:${widget.workerID.substring(3)}");
     });
     super.initState();
   }
@@ -110,7 +117,7 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
             Container(
               height: height*0.50,
               width: width,
-              padding: EdgeInsets.only(top: height * 0.07, left:width*0.05, right:width*0.05),
+              padding: EdgeInsets.only(top: height * 0.01, left:width*0.05, right:width*0.05),
               margin: EdgeInsets.fromLTRB(width*0.05, height*0.25, width*0.05, height*0.10),
               decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
@@ -145,15 +152,14 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                                     contentPadding: const EdgeInsets.fromLTRB(15, 3, 0, 0),
                                     filled: false,
                                     fillColor: const Color(0x1d35312b),
-                                    hintText: 'Select Item',
-                                    labelText: 'Select Item',
+                                    labelText: '${item == null ? 'Select Item' : 'Item Name'}',
                                     enabledBorder:OutlineInputBorder(
                                       borderSide: BorderSide(
                                           color: AppConstant.primaryColor),
                                       borderRadius: const BorderRadius.all(Radius.circular(5)),
                                     ),
                                   ),
-                                   child:Text('Select Item') ,
+                                   child:Text('${item == null ?'Select Item' : item}') ,
                               ),
                                ),
                               SizedBox(
@@ -170,7 +176,12 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                                     return null;
                                   }
                                 },
-                               onChanged: () { },
+                               onChanged: () {
+                                  setState(() {
+                                    var total =  int.parse(itemQuantity.text) * int.parse(itemPrice.toString());
+                                    totalPrice.text = total.toString();
+                                  });
+                               },
                               ),
                               SizedBox(
                                 height: height*0.03,
@@ -178,6 +189,7 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                               AppConstant().getTextField(
                                 'Total Price',
                                 totalPrice,
+                                isEnable: false,
                                 isNumber: true,
                                 validator: (value) {
                                   if (value!.isEmpty) {
@@ -197,17 +209,24 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                                     setState(() {});
                                     isLoading = true;
                                     db.addWork(data: AddWorkModel(
-                                      item: '',
+                                      item: item.toString(),
+                                      itemImage: itemImage.toString(),
                                       quantity: itemQuantity.text,
                                       totalPrice: totalPrice.text,
-                                      workerId: widget.workerID,
+                                      status: 'Pending',
+                                      workerId: widget.workerID.substring(3),
                                       lastUpdatedTime: DateTime.now(),
                                     )).then((value){
                                       AppConstant().showToast('Work Assign Successfully');
+                                      item = null;
+                                      itemQuantity.clear();
+                                      totalPrice.clear();
+                                      itemImage = null;
+                                      itemPrice = null;
                                       setState(() {});
                                       isLoading = false;
                                     }).onError((error, stackTrace){
-                                      AppConstant().showToast(error.toString().split(']')[1]);
+                                      AppConstant().showToast(error.toString().split(']')[1], toastGravity: ToastGravity.BOTTOM);
                                       setState(() {});
                                       isLoading = false;
                                     });
@@ -263,7 +282,7 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                   height: size.height * 0.5,
                   width: size.width,
                   padding: EdgeInsets.only(
-                      top: size.height * 0.02,
+                      top: size.height * 0.01,
                       left: size.width * 0.02,
                       right: size.width * 0.02,
                       bottom: size.height * 0.02,
@@ -279,6 +298,37 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                       Row(
+                         mainAxisAlignment: MainAxisAlignment.end,
+                         children: [
+                           Bounce(
+                             duration: const Duration(milliseconds:90),
+                             onPressed: ()async{
+                               Navigator.pop(context);
+                             },
+                             child: Container(
+                               height: size.height*0.04,
+                               width: size.width*0.12,
+                               margin:  EdgeInsets.fromLTRB(0, 0,0,0),
+                               decoration: BoxDecoration(
+                                 shape: BoxShape.circle,
+                                 color: AppConstant.primaryColor,
+                                 //borderRadius: BorderRadius.circular(50),
+                                 border: Border.all(color: AppConstant.primaryColor, width:1),
+                                 boxShadow: const [
+                                   BoxShadow(
+                                     color: Colors.grey,
+                                     blurRadius: 3,
+                                     spreadRadius: 0.5,
+                                   ),
+                                 ],
+                               ),
+                               child: const Icon(Icons.close,color: Colors.white,),
+
+                             ),
+                           ),
+                         ],
+                       ),
                       _buildListView(),
                     ],
                   ),
@@ -296,11 +346,7 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
         builder: (context, snapshot){
           if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(
-              child: Text('Loading......',
-                style:  TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 14),
-              ),
+              child: CircularProgressIndicator(),
             );
           } else if(snapshot.data!.docs.length == 0 || snapshot.data!.docs.isEmpty) {
             return const Center(
@@ -315,7 +361,7 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
               child: ListView.builder(
                 shrinkWrap: true,
                 itemCount: snapshot.data!.docs.length,
-                padding:EdgeInsets.only(left :width*.05, right:width*.05),
+                padding:EdgeInsets.only(bottom: height*0.05),
                 itemBuilder: (context, index) {
                   return AnimationConfiguration.staggeredList(
                     position: index,
@@ -325,59 +371,99 @@ class _AddWorkScreenState extends State<AddWorkScreen> {
                       child: FadeInAnimation(
                         child: InkWell(
                           onTap: (){},
-                          child: Container(
-                            decoration:  BoxDecoration(
-                                color: AppConstant.backgroundColor,
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.grey,
-                                    spreadRadius: 0.1,
-                                    blurRadius: 5.0,
-                                  ),
-                                ],
-                                borderRadius: const BorderRadius.all( Radius.circular(6.0))),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  height: height*0.06,
-                                  width: width*0.02,
-                                  margin:  EdgeInsets.fromLTRB(width*0.01, height*0.01, width*0.02, height*0.002),
-                                  decoration:  BoxDecoration(
-                                      color:AppConstant.primaryColor,
-                                      borderRadius: const BorderRadius.all( Radius.circular(6.0))),
-                                ),
-                                Flexible(
-                                  child: Container(
-                                    margin:  const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          snapshot.data!.docs[index]['itemName'],
-                                          style:  TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: width*0.05),
-                                        ),
-                                        const SizedBox(height: 3),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                "${snapshot.data!.docs[index]['itemPrice']}",
-                                                style: TextStyle(
-                                                    fontSize: width*0.035),
-                                              ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Bounce(
+                              duration: const Duration(milliseconds:90),
+                              onPressed: ()async{
+                                setState(() {
+                                  item = snapshot.data!.docs[index]['itemName'];
+                                  itemPrice = snapshot.data!.docs[index]['itemPrice'].toString();
+                                  itemImage = snapshot.data!.docs[index]['itemImage'];
+
+                                  if(itemQuantity.text.isNotEmpty){
+                                    var total = int.parse(itemQuantity.text) * int.parse(itemPrice.toString());
+                                    totalPrice.text = total.toString();
+                                  }
+                                });
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                decoration:  BoxDecoration(
+                                    color: AppConstant.backgroundColor,
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.grey,
+                                        spreadRadius: 0.1,
+                                        blurRadius: 5.0,
+                                      ),
+                                    ],
+                                    borderRadius: const BorderRadius.all( Radius.circular(6.0))),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                      height: height*0.08,
+                                      width: width*0.02,
+                                      margin:  EdgeInsets.fromLTRB(width*0.02, height*0.01, width*0.02, height*0.01),
+                                      decoration: BoxDecoration(
+                                          color:AppConstant.primaryColor,
+                                          borderRadius: const BorderRadius.all( Radius.circular(6.0))),
+                                    ),
+                                    Flexible(
+                                      child: Container(
+                                        margin:  EdgeInsets.fromLTRB(0, height*0.02, 0, 0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Text('ItemName : ${snapshot.data!.docs[index]['itemName']}',
+                                              style:  TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: width*0.05),
+                                            ),
+                                            const SizedBox(height: 3),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text("ItemPrice : ${snapshot.data!.docs[index]['itemPrice']}",
+                                                    style: TextStyle(
+                                                        fontSize: width*0.035),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                    Container(
+                                      height: height*0.10,
+                                      width: width*0.16,
+                                      margin:  EdgeInsets.fromLTRB(0, 0,width*0.02, 0),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        //borderRadius: BorderRadius.circular(50),
+                                        image: DecorationImage(
+                                          image: NetworkImage('${snapshot.data!.docs[index]['itemImage']}'),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        border: Border.all(color: AppConstant.primaryColor, width:1),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.grey,
+                                            blurRadius: 3,
+                                            spreadRadius: 0.5,
+                                          ),
+                                        ],
+                                      ),
+
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ),

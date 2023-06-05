@@ -127,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         fontSize: size.width * 0.04,
                                         letterSpacing: 1,
                                         fontFamily: AppConstant.medium,
-                                        color: AppConstant.primaryTextDarkColor,
+                                        color: AppConstant.colorDrawerIcon,
                                       ),
                                       decoration: InputDecoration(
                                         prefixIcon: Icon(Icons.email, color: AppConstant.primaryColor, size: 22,),
@@ -176,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         fontSize: size.width * 0.041,
                                         letterSpacing: 1,
                                         fontFamily: AppConstant.medium,
-                                        color: AppConstant.primaryTextDarkColor,
+                                        color: AppConstant.colorDrawerIcon,
                                       ),
                                       decoration: InputDecoration(
                                         prefixIcon: Icon(Icons.lock, color: AppConstant.primaryColor, size: 22,),

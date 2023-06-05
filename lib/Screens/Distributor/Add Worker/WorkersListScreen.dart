@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -77,8 +78,9 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                                       child:  Icon(Icons.arrow_back_ios,color: AppConstant.backgroundColor,),
                                     ),
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
+                                  Bounce(
+                                    duration: const Duration(milliseconds:90),
+                                    onPressed: ()async{
                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>const AddWorkerScreen()));
                                     },
                                     child: Tooltip(
@@ -138,11 +140,11 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
     return StreamBuilder<QuerySnapshot>(
         stream: AddWorkerDatabase().listenWorker(),
         builder: (context, snapshot){
-          if (snapshot.data == null){
+          if(snapshot.connectionState == ConnectionState.waiting){
             return const Center(
               child: CircularProgressIndicator(),
             );
-          }else if(snapshot.data!.docs.isEmpty) {
+          }else if(snapshot.data!.docs.length == 0 || snapshot.data!.docs.isEmpty) {
             return const Center(
               child: Text('No any Workers/Please add worker first',
                 style:  TextStyle(
@@ -188,14 +190,14 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                                 Container(
                                   height: height*0.06,
                                   width: width*0.02,
-                                  margin:  EdgeInsets.fromLTRB(width*0.01, height*0.01, width*0.02, height*0.002),
+                                  margin:  EdgeInsets.fromLTRB(width*0.01, height*0.01, width*0.02, height*0.01),
                                   decoration:  BoxDecoration(
                                       color:AppConstant.primaryColor,
                                       borderRadius: const BorderRadius.all( Radius.circular(6.0))),
                                 ),
                                 Flexible(
                                   child: Container(
-                                    margin:  const EdgeInsets.all(8.0),
+                                    margin:  EdgeInsets.fromLTRB(0, height*0.017, 0, 0),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,14 +224,15 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                                     ),
                                   ),
                                 ),
-                                GestureDetector(
-                                  onTap: (){
+                                Bounce(
+                                  duration: const Duration(milliseconds:90),
+                                  onPressed: ()async{
                                     _update(address:snapshot.data!.docs[index]['address'], email:snapshot.data!.docs[index]['email'] ,id:snapshot.data!.docs[index].id ,name:snapshot.data!.docs[index]['name'],password: snapshot.data!.docs[index]['password'],phoneNumber:snapshot.data!.docs[index]['mobileNumber']);
                                   },
                                   child: Container(
                                     height: height*0.05,
                                     width: width*0.09,
-                                    margin:  EdgeInsets.fromLTRB(width*0.01,   height*0.01, width*0.02, height*0.002),
+                                    margin:  EdgeInsets.fromLTRB(width*0.01,   height*0.017, width*0.02, height*0.002),
                                     child: Image.asset(
                                       'Assets/Images/pen.png',
                                     ),
@@ -284,6 +287,10 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
     await showModalBottomSheet(
         isScrollControlled: true,
         context: context,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15),
+          topRight: Radius.circular(15),
+        ),),
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext  context,StateSetter setState ){
@@ -302,8 +309,9 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                                 fontSize: width*.06,
                                 fontWeight: FontWeight.w600),
                           ),
-                          GestureDetector(
-                            onTap: (){
+                          Bounce(
+                            duration: const Duration(milliseconds:90),
+                            onPressed: ()async{
                               Navigator.of(context).pop();
                               showDialog(
                                 context: context,
@@ -380,8 +388,7 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                                         ),
                                       ],
                                     ),
-                              );
-                            },
+                              );                            },
                             child: Container(
                               height: height*0.05,
                               width: width*0.08,
