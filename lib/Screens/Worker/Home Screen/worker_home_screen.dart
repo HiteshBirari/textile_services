@@ -1,27 +1,24 @@
 // ignore_for_file: must_be_immutable, use_build_context_synchronously
 
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:textile_service/Utils/app_constant.dart';
-
 import '../../../Utils/ClipperPath.dart';
 import '../../../Utils/pref_utils.dart';
 import '../../Distributor/AddWork/Database/add_work_database.dart';
 import '../../Distributor/DataModel.dart';
 import '../Login Screen/worker_login_screen.dart';
 import 'QrDailog.dart';
-import 'dart:io' as io;
+
 
 class WorkerHomeScreen extends StatefulWidget {
   String? workerName;
@@ -531,105 +528,7 @@ class _WorkerHomeScreenState extends State<WorkerHomeScreen> {
     );
   }
 
-  // _showDialog() async {
-  //   final double height = MediaQuery.of(context).size.height;
-  //   final double width = MediaQuery.of(context).size.width;
-  //   await Future.delayed(const Duration(milliseconds: 1));
-  //   showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return AlertDialog(
-  //           shape:  const RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.all( Radius.circular(20.0))),
-  //           contentPadding:  const EdgeInsets.only(top: 09),
-  //           title: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Text(
-  //                 'Logout',
-  //                 style: TextStyle(
-  //                     fontSize: width*0.06,
-  //                     color: AppConstant.primaryTextDarkColor,
-  //                     fontWeight: FontWeight.w600),
-  //               ),
-  //               SizedBox(height: height*0.01),
-  //               const Divider(
-  //                 color: Colors.grey,
-  //                 height: 4.0,
-  //               ),
-  //             ],
-  //           ),
-  //           content: Padding(
-  //             padding: const EdgeInsets.only(left: 20.0, right: 10, top: 10.0, bottom: 20),
-  //             child: Column(
-  //               mainAxisSize: MainAxisSize.min,
-  //               children:[
-  //                 Text(
-  //                   'Are you sure you want to logout?',
-  //                   style: TextStyle(
-  //                     fontSize: width*0.06,
-  //                     color: AppConstant.primaryTextDarkColor.withOpacity(.6),
-  //                   ),
-  //                 ),
-  //                 SizedBox(height: height*0.03),
-  //                 Row(
-  //                   mainAxisAlignment: MainAxisAlignment.end,
-  //                   crossAxisAlignment: CrossAxisAlignment.end,
-  //                   children: [
-  //                     MaterialButton(
-  //                       onPressed: () {
-  //                         setState(() {
-  //                           prefUtils.clearPreferencesData();
-  //                         });
-  //                         Navigator.pushAndRemoveUntil(context,MaterialPageRoute(builder: (context)=>const WorkerLoginScreen()),(route) => false);
-  //                       },
-  //                       height: height * 0.05,
-  //                       elevation: 3,
-  //                       color: AppConstant.primaryColor,
-  //                       shape: RoundedRectangleBorder(
-  //                         borderRadius: BorderRadius.circular(10),
-  //                       ),
-  //                       child: Container(
-  //                         margin: EdgeInsets.symmetric(horizontal: width*0.02),
-  //                         child: Text(
-  //                           'Yes',
-  //                           style: TextStyle(
-  //                               fontSize: width*0.05,
-  //                               color: Colors.white,
-  //                               fontWeight: FontWeight.w500),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     SizedBox(width:width*0.02),
-  //                     MaterialButton(
-  //                       onPressed: () {
-  //                         Navigator.pop(context);
-  //                       },
-  //                       height: height * 0.05,
-  //                       elevation: 3,
-  //                       color: AppConstant.primaryColor,
-  //                       shape: RoundedRectangleBorder(
-  //                         borderRadius: BorderRadius.circular(10),
-  //                       ),
-  //                       child: Container(
-  //                         margin: EdgeInsets.symmetric(horizontal: width*0.02),
-  //                         child: Text(
-  //                           'No',
-  //                           style: TextStyle(
-  //                               fontSize: width*0.05,
-  //                               color: Colors.white,
-  //                               fontWeight: FontWeight.w500),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 )
-  //               ],
-  //             ),
-  //           ),
-  //         );
-  //       });
-  // }
+
 
   _buildWorkerListView() {
     final double height = MediaQuery.of(context).size.height;

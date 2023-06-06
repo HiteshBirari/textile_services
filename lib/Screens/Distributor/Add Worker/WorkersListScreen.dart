@@ -8,6 +8,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:textile_service/Screens/Distributor/Add%20Worker/AddWorkerScreen.dart';
+import 'package:textile_service/Screens/Distributor/Add%20Worker/worklistbyuser.dart';
 import 'package:textile_service/Utils/ClipperPath.dart';
 
 import '../../../Utils/app_constant.dart';
@@ -77,6 +78,13 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                                       padding:  EdgeInsets.only(left:width*0.01),
                                       child:  Icon(Icons.arrow_back_ios,color: AppConstant.backgroundColor,),
                                     ),
+                                  ),
+                                  Text(
+                                    'Worker List',
+                                    style: TextStyle(
+                                        fontSize: width * 0.05,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white),
                                   ),
                                   Bounce(
                                     duration: const Duration(milliseconds:90),
@@ -165,8 +173,11 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                     child: SlideAnimation(
                       verticalOffset: 56.0,
                       child: FadeInAnimation(
-                        child: InkWell(
-                          onTap: null,
+                        child: Bounce(
+                          duration: const Duration(milliseconds:90),
+                          onPressed: ()async{
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=> WorkListByUser(snapshot.data!.docs[index].id)));
+                          },
                           child: Container(
                             margin:  EdgeInsets.fromLTRB(width*0.03, height*0.00, width*0.03, height*0.02),
                             padding:  EdgeInsets.fromLTRB(width*0.03, 0, width*0.03, 0),
