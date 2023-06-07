@@ -6,6 +6,9 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:textile_service/Screens/Distributor/Add%20Item/Database/add_item_database.dart';
+import 'package:textile_service/Screens/Distributor/Add%20Worker/Database/add_worker_database.dart';
+import 'package:textile_service/Screens/Distributor/AddWork/Database/add_work_database.dart';
 import 'package:textile_service/Screens/Distributor/Login%20Screen/login_screen.dart';
 import 'package:textile_service/Utils/pref_utils.dart';
 import '../../Utils/ClipperPath.dart';
@@ -25,13 +28,47 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey =  GlobalKey<ScaffoldState>();
+   AddWorkerDatabase addWorkerDatabase = AddWorkerDatabase();
+   AddItemDatabase addItemDatabase = AddItemDatabase();
+   AddWorkDatabase addWorkDatabase = AddWorkDatabase();
 
-  List<DataModel> allData = [
-    DataModel('Total Worker', 'Assets/Images/user1.png',1.0,Colors.indigo),
-    DataModel('Total Items', 'Assets/Images/totalitem1.png',0.5,Colors.blueAccent),
-    DataModel('Pending Work', 'Assets/Images/pending1.png',0.9,Colors.amber),
-    DataModel('Completed Work', 'Assets/Images/complited1.png',0.10,Colors.green),
-  ];
+
+
+
+   int totalWorker = 0;
+   int totalItems = 0;
+   int pendingWork = 0;
+   int completedWork = 0;
+
+  Future<void> getWorkerCount()async{
+    totalWorker = await addWorkerDatabase.getWorkerCount();
+  }
+
+  Future<void> getItemCount()async{
+    totalItems = await addItemDatabase.getItemCount();
+  }
+
+  Future<void> getPendingWorkCount()async{
+    pendingWork = await addWorkDatabase.getPendingWorkCount();
+  }
+
+  Future<void> getCompletedWorkCount()async{
+    completedWork = await addWorkDatabase.getCompletedWorkCount();
+  }
+
+
+
+
+  List<DataModel> allData = [];
+
+  Future<void> setData()async{
+    allData = [
+      DataModel('Total Worker', 'Assets/Images/user1.png', totalWorker,Colors.indigo),
+      DataModel('Total Items', 'Assets/Images/totalitem1.png',totalItems,Colors.blueAccent),
+      DataModel('Pending Work', 'Assets/Images/pending1.png',pendingWork,Colors.amber),
+      DataModel('Completed Work', 'Assets/Images/complited1.png',completedWork,Colors.green),
+    ];
+  }
 
   String? name;
   PrefUtils prefUtils = PrefUtils();
@@ -40,7 +77,18 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     getData().whenComplete((){
-      setState(() {});
+      getWorkerCount().whenComplete((){
+         getItemCount().whenComplete((){
+           getPendingWorkCount().whenComplete((){
+               getCompletedWorkCount().whenComplete((){
+                 setData().whenComplete((){
+                   setState(() {});
+                 });
+
+               });
+           });
+         });
+      });
     });
   }
 
@@ -357,10 +405,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   lineWidth: 7.0,
                                   animation: true,
                                   animationDuration: 500,
-                                  percent: allData[index].counts,
+                                  percent: allData[index].counts.toDouble(),
                                   backgroundColor: Colors.grey.shade200,
                                   addAutomaticKeepAlive: true,
-                                  center:Text("${allData[index].counts*100}%"),
+                                  center:Text("${allData[index].counts}"),
                                   progressColor: allData[index].color,
                                 ),
                               ],

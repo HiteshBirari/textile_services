@@ -30,12 +30,26 @@ class WorkerHomeScreen extends StatefulWidget {
 
 class _WorkerHomeScreenState extends State<WorkerHomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  AddWorkDatabase addWorkDatabase = AddWorkDatabase();
+  int pendingWork = 0;
+  int completedWork = 0;
 
-  List<DataModel> allData = [
-    DataModel('Pending Work', 'Assets/Images/pending1.png', 0.9, Colors.amber),
-    DataModel(
-        'Completed Work', 'Assets/Images/complited1.png', 0.10, Colors.green),
-  ];
+  Future<void> getPendingWorkCount()async{
+    pendingWork = await addWorkDatabase.getPendingWorkCount();
+  }
+
+  Future<void> getCompletedWorkCount()async{
+    completedWork = await addWorkDatabase.getCompletedWorkCount();
+  }
+
+  List<DataModel> allData = [];
+
+  Future<void> setData()async{
+    allData = [
+      DataModel('Pending Work', 'Assets/Images/pending1.png',pendingWork,Colors.amber),
+      DataModel('Completed Work', 'Assets/Images/complited1.png',completedWork,Colors.green),
+    ];
+  }
 
   String? name;
   PrefUtils prefUtils = PrefUtils();
@@ -44,7 +58,9 @@ class _WorkerHomeScreenState extends State<WorkerHomeScreen> {
   void initState() {
     super.initState();
     getData().whenComplete(() {
-      setState(() {});
+      setData().whenComplete((){
+        setState(() {});
+      });
     });
   }
 
@@ -366,11 +382,11 @@ class _WorkerHomeScreenState extends State<WorkerHomeScreen> {
                                   lineWidth: 7.0,
                                   animation: true,
                                   animationDuration: 500,
-                                  percent: allData[index].counts,
+                                  percent: allData[index].counts.toDouble(),
                                   backgroundColor: Colors.grey.shade200,
                                   addAutomaticKeepAlive: true,
                                   center:
-                                      Text("${allData[index].counts * 100}%"),
+                                      Text("${allData[index].counts}"),
                                   progressColor: allData[index].color,
                                 ),
                               ],
