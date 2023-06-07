@@ -8,7 +8,7 @@
         android:label="Textile Service"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher_foreground">
         <activity
             android:name=".MainActivity"
             android:exported="true"

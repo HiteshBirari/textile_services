@@ -605,13 +605,14 @@ class _WorkerHomeScreenState extends State<WorkerHomeScreen> {
                                       sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0,rowIndex: 0)).value= 'ItemName';
                                       sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1,rowIndex: 0)).value='ItemQuantity';
                                       sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2,rowIndex: 0)).value='TotalPrice';
+                                      sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3,rowIndex: 0)).value= 'Status';
 
                                       for(int row = 1; row <= snapshot.data!.docs.length; row++) {
 
                                         sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0,rowIndex: row)).value=snapshot.data!.docs[row-1]['item'].toString();
                                         sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1,rowIndex: row)).value=snapshot.data!.docs[row-1]['quantity'].toString();
                                         sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2,rowIndex: row)).value=snapshot.data!.docs[row-1]['totalPrice'].toString();
-
+                                        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3,rowIndex: row)).value=snapshot.data!.docs[row-1]['status'].toString();
                                       }
 
                                       File file = File('${directory.path}/${prefUtils.getName()}.xlsx');
