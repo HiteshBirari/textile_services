@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
    int totalItems = 0;
    int pendingWork = 0;
    int completedWork = 0;
+  PrefUtils prefUtils = PrefUtils();
 
   Future<void> getWorkerCount()async{
     totalWorker = await addWorkerDatabase.getWorkerCount();
@@ -49,11 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getPendingWorkCount()async{
-    pendingWork = await addWorkDatabase.getPendingWorkCount();
+    pendingWork = await addWorkDatabase.getPendingWorkDCount();
   }
 
   Future<void> getCompletedWorkCount()async{
-    completedWork = await addWorkDatabase.getCompletedWorkCount();
+    completedWork = await addWorkDatabase.getCompletedWorkDCount();
   }
 
 
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   String? name;
-  PrefUtils prefUtils = PrefUtils();
+
 
   @override
   void initState() {
@@ -96,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
     prefUtils.getName().toString();
     prefUtils.getPhoneNumber().toString();
     prefUtils.getEmail().toString();
+    prefUtils.getWorkerID().toString();
   }
 
   @override
@@ -405,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   lineWidth: 7.0,
                                   animation: true,
                                   animationDuration: 500,
-                                  percent: allData[index].counts.toDouble(),
+                                  percent: allData[index].counts / 100,
                                   backgroundColor: Colors.grey.shade200,
                                   addAutomaticKeepAlive: true,
                                   center:Text("${allData[index].counts}"),

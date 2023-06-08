@@ -69,7 +69,33 @@ class AddWorkDatabase {
     }
   }
 
-  Future<int> getPendingWorkCount() async {
+  Future<int> getPendingWorkCount(String id) async {
+    int count = 0;
+    try {
+      var snap =
+      await FirebaseFirestore.instance.collection('AssignedWork').where("workerId", isEqualTo: id).where("status", isEqualTo: "Pending").count().get();
+      count = snap.count;
+      return count;
+    } catch (err) {
+      print(err);
+      return count;
+    }
+  }
+
+  Future<int> getCompletedWorkCount(String id) async {
+    int count = 0;
+    try {
+      var snap =
+      await FirebaseFirestore.instance.collection('AssignedWork').where("workerId", isEqualTo: id).where("status", isEqualTo: "Completed").count().get();
+      count = snap.count;
+      return count;
+    } catch (err) {
+      print(err);
+      return count;
+    }
+  }
+
+  Future<int> getPendingWorkDCount() async {
     int count = 0;
     try {
       var snap =
@@ -82,7 +108,7 @@ class AddWorkDatabase {
     }
   }
 
-  Future<int> getCompletedWorkCount() async {
+  Future<int> getCompletedWorkDCount() async {
     int count = 0;
     try {
       var snap =

@@ -35,11 +35,11 @@ class _WorkerHomeScreenState extends State<WorkerHomeScreen> {
   int completedWork = 0;
 
   Future<void> getPendingWorkCount()async{
-    pendingWork = await addWorkDatabase.getPendingWorkCount();
+    pendingWork = await addWorkDatabase.getPendingWorkCount(prefUtils.getWorkerID());
   }
 
   Future<void> getCompletedWorkCount()async{
-    completedWork = await addWorkDatabase.getCompletedWorkCount();
+    completedWork = await addWorkDatabase.getCompletedWorkCount(prefUtils.getWorkerID());
   }
 
   List<DataModel> allData = [];
@@ -58,8 +58,12 @@ class _WorkerHomeScreenState extends State<WorkerHomeScreen> {
   void initState() {
     super.initState();
     getData().whenComplete(() {
-      setData().whenComplete((){
-        setState(() {});
+      getPendingWorkCount().whenComplete((){
+         getCompletedWorkCount().whenComplete((){
+           setData().whenComplete((){
+             setState(() {});
+           });
+         });
       });
     });
   }
@@ -382,7 +386,7 @@ class _WorkerHomeScreenState extends State<WorkerHomeScreen> {
                                   lineWidth: 7.0,
                                   animation: true,
                                   animationDuration: 500,
-                                  percent: allData[index].counts.toDouble(),
+                                  percent: allData[index].counts / 100,
                                   backgroundColor: Colors.grey.shade200,
                                   addAutomaticKeepAlive: true,
                                   center:
